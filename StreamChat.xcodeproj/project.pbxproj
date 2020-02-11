@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		465D64C2231808A2006BAE42 /* AttachmentTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465D64C1231808A2006BAE42 /* AttachmentTypeTests.swift */; };
+		77A66F1E23F1B153003BE765 /* RxGesture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDD022E9BB0C005CFAC9 /* RxGesture.framework */; };
+		77A66F2023F1B163003BE765 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC422E9BAC5005CFAC9 /* RxCocoa.framework */; };
 		798D413C23ACC89500F39EF8 /* ClientLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798D413B23ACC89400F39EF8 /* ClientLoggerTests.swift */; };
 		8A048E4A2331252400FDB3C0 /* Channel+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A048E492331252400FDB3C0 /* Channel+Database.swift */; };
 		8A048E4C2332247900FDB3C0 /* ChannelPresenter+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A048E4B2332247900FDB3C0 /* ChannelPresenter+Request.swift */; };
@@ -200,11 +202,9 @@
 		8AD5EDC922E9BAC5005CFAC9 /* Starscream.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC122E9BAC5005CFAC9 /* Starscream.framework */; };
 		8AD5EDCA22E9BAC5005CFAC9 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC222E9BAC5005CFAC9 /* RxSwift.framework */; };
 		8AD5EDCB22E9BAC5005CFAC9 /* Reachability.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC322E9BAC5005CFAC9 /* Reachability.framework */; };
-		8AD5EDCC22E9BAC5005CFAC9 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC422E9BAC5005CFAC9 /* RxCocoa.framework */; };
 		8AD5EDCD22E9BAC5005CFAC9 /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC522E9BAC5005CFAC9 /* RxBlocking.framework */; };
 		8AD5EDCE22E9BAC5005CFAC9 /* Gzip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC622E9BAC5005CFAC9 /* Gzip.framework */; };
 		8AD5EDD322E9BB0C005CFAC9 /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDCF22E9BB0C005CFAC9 /* SnapKit.framework */; };
-		8AD5EDD422E9BB0C005CFAC9 /* RxGesture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDD022E9BB0C005CFAC9 /* RxGesture.framework */; };
 		8AD5EDD522E9BB0C005CFAC9 /* Nuke.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDD122E9BB0C005CFAC9 /* Nuke.framework */; };
 		8AD5EDD622E9BB0C005CFAC9 /* SwiftyGif.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDD222E9BB0C005CFAC9 /* SwiftyGif.framework */; };
 		8AD82E4B2382E25A0037D47D /* Message+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD82E4A2382E25A0037D47D /* Message+Database.swift */; };
@@ -499,7 +499,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AD5EDD322E9BB0C005CFAC9 /* SnapKit.framework in Frameworks */,
-				8AD5EDD422E9BB0C005CFAC9 /* RxGesture.framework in Frameworks */,
+				77A66F1E23F1B153003BE765 /* RxGesture.framework in Frameworks */,
 				8AD5EDD522E9BB0C005CFAC9 /* Nuke.framework in Frameworks */,
 				8A2A51242390275500B230E9 /* StreamChatCore.framework in Frameworks */,
 				8AD5EDD622E9BB0C005CFAC9 /* SwiftyGif.framework in Frameworks */,
@@ -514,8 +514,8 @@
 				8AD5EDC822E9BAC5005CFAC9 /* RxRelay.framework in Frameworks */,
 				8AD5EDC922E9BAC5005CFAC9 /* Starscream.framework in Frameworks */,
 				8AD5EDCA22E9BAC5005CFAC9 /* RxSwift.framework in Frameworks */,
+				77A66F2023F1B163003BE765 /* RxCocoa.framework in Frameworks */,
 				8AD5EDCB22E9BAC5005CFAC9 /* Reachability.framework in Frameworks */,
-				8AD5EDCC22E9BAC5005CFAC9 /* RxCocoa.framework in Frameworks */,
 				8AD5EDCD22E9BAC5005CFAC9 /* RxBlocking.framework in Frameworks */,
 				8AD5EDCE22E9BAC5005CFAC9 /* Gzip.framework in Frameworks */,
 			);

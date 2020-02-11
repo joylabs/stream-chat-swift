@@ -1,0 +1,11 @@
+framework module RxAppState {
+  umbrella header "RxAppState-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module RxAppState.Swift {
+    header "RxAppState-Swift.h"
+    requires objc
+}
