@@ -109,7 +109,32 @@ extension ChatViewController {
             composerAddFileContainerView.add(to: composerView)
             
             composerView.attachmentButton.rx.tap
-                .subscribe(onNext: { [weak self] in self?.showAddFileView() })
+                .subscribe(onNext: { [weak self] in //self?.showAddFileView()
+                    let alert = UIAlertController(title: "Title", message: "Please Select an Option", preferredStyle: .actionSheet)
+                    alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (_) in
+                        self?.showImagePicker(sourceType: .camera, { (image, status) in
+                            print(image?.fileName)
+                        })
+                    }))
+
+                    alert.addAction(UIAlertAction(title: "Photo or video", style: .default, handler: { (_) in
+                        self?.showImagePicker(sourceType: .photoLibrary, { (image, status) in
+                            print(image?.fileName)
+                        })
+                    }))
+
+                    alert.addAction(UIAlertAction(title: "Document", style: .default, handler: { (_) in
+                        self?.showAddFileView()
+                    }))
+
+                    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+                        print("User click Dismiss button")
+                    }))
+
+                    self?.present(alert, animated: true, completion: {
+                        print("completion block")
+                    })
+                })
                 .disposed(by: disposeBag)
         }
 
