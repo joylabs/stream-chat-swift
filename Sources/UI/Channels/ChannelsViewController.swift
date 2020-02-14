@@ -11,8 +11,13 @@ import StreamChatCore
 import RxSwift
 import RxCocoa
 
+
 /// A channels view controller.
 open class ChannelsViewController: ViewController {
+    
+    open func updateCompletion() {
+        
+    }
     
     /// A dispose bag for rx subscriptions.
     public var disposeBag = DisposeBag()
@@ -26,7 +31,7 @@ open class ChannelsViewController: ViewController {
     }
     
     /// A list of table view items, e.g. channel presenters.
-    public private(set) var items = [ChatItem]()
+    open var items = [ChatItem]()
     
     /// A channels presenter.
     open var channelsPresenter = ChannelsPresenter() {
@@ -273,6 +278,8 @@ extension ChannelsViewController: UITableViewDataSource, UITableViewDelegate {
         default:
             break
         }
+        
+        updateCompletion()
     }
     
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
