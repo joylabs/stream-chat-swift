@@ -28,7 +28,7 @@ final class AttachmentPreview: UIView, AttachmentPreviewProtocol {
     
     private(set) lazy var imageView: UIImageView = {
         let imageView = UIImageView(image: UIImage.Icons.image)
-        imageView.contentMode = .center
+        imageView.contentMode = .scaleToFill
         imageView.clipsToBounds = true
         addSubview(imageView)
         
@@ -54,6 +54,7 @@ final class AttachmentPreview: UIView, AttachmentPreviewProtocol {
         stackView.snp.makeConstraints { make in
             linkStackViewTopConstraint = make.top.equalToSuperview().priority(999).constraint
             make.bottom.equalToSuperview().offset(-CGFloat.messageCornerRadius).priority(999)
+            make.width.equalTo(200)
             make.left.right.equalToSuperview()
         }
         
@@ -92,6 +93,7 @@ final class AttachmentPreview: UIView, AttachmentPreviewProtocol {
         label.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
             make.left.equalToSuperview().offset(CGFloat.messageCornerRadius)
+            make.width.equalTo(200)
             make.right.equalToSuperview().offset(-CGFloat.messageCornerRadius)
         }
         
@@ -275,14 +277,14 @@ final class AttachmentPreview: UIView, AttachmentPreviewProtocol {
             DispatchQueue.main.async { [weak self] in self?.activityIndicatorView.stopAnimating() }
         }
         
-        var width = attachment.isImage && !hasActions ? defaultHeight : maxWidth
+        let width: CGFloat = 200.0 // Default size for all attachments
         var height = defaultHeight
         
         if image.size.height > 0 {
             imageView.backgroundColor = backgroundColor
             
             if attachment.isImage, !hasActions {
-                width = min(image.size.width / image.size.height * defaultHeight, maxWidth).rounded()
+                imageView.contentMode = .scaleAspectFill
                 widthConstraint?.update(offset: width)
             }
             

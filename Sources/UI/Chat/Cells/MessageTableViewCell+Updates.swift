@@ -25,7 +25,8 @@ extension MessageTableViewCell {
             
             if let message = message {
                 let bundle = Bundle(for: MessageTableViewCell.self)
-                let imagePath = message.isOwn ? "OutgoingMessageBg" : "IncomingMessageBg"
+                let attachmentPath = message.attachments.isEmpty ? "" : "Attachment"
+                let imagePath = message.isOwn ? "OutgoingMessage\(attachmentPath)Bg" : "IncomingMessage\(attachmentPath)Bg"
                 let image = UIImage(named: imagePath, in: bundle, compatibleWith: nil)
                 messageContainerView.image = image ?? messageBackgroundImage
                 return

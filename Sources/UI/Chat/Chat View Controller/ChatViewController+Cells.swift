@@ -108,7 +108,7 @@ extension ChatViewController {
                 })
             }
             
-            cell.updateBackground(isContinueMessage: !message.isEphemeral)
+            cell.updateBackground(isContinueMessage: !message.isEphemeral, message: message)
         } else {
             cell.updateBackground(isContinueMessage: isContinueMessage, message: message)
         }

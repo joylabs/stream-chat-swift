@@ -13,6 +13,14 @@ import RxCocoa
 import RxGesture
 
 // MARK: - Attachments
+extension UIView {
+    func roundCorners(corners: UIRectCorner, radius: CGFloat) {
+        let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let mask = CAShapeLayer()
+        mask.path = path.cgPath
+        layer.mask = mask
+    }
+}
 
 extension MessageTableViewCell {
     
@@ -52,6 +60,7 @@ extension MessageTableViewCell {
         }
         
         messageStackView.insertArrangedSubview(preview, at: index)
+        messageStackView.spacing = 0 // Whenever the cell has an attachment it needs to be placed right above the text
         attachmentPreviews.append(preview)
         
         // File preview.
@@ -83,10 +92,12 @@ extension MessageTableViewCell {
                 }
             } else {
                 // Image/Video preview.
-                preview.update(maskImage: maskImageForAttachment(at: index), addGetures)
+                preview.update(maskImage: nil, addGetures)
             }
         }
     }
+    
+    
     
     private func createAttachmentPreview(with attachment: Attachment,
                                          style: MessageViewStyle,
@@ -96,14 +107,16 @@ extension MessageTableViewCell {
         preview.maxWidth = .attachmentPreviewMaxWidth
         preview.tintColor = style.textColor
         preview.imageView.backgroundColor = imageBackgroundColor
-        preview.layer.cornerRadius = style.cornerRadius
+        preview.layer.cornerRadius = 10
+        preview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         preview.attachment = attachment
         preview.forceToReload = reload
+        
         
         preview.backgroundColor = attachment.isImage && attachment.actions.isEmpty
             ? style.chatBackgroundColor
             : (style.textColor.isDark ? .chatSuperLightGray : .chatDarkGray)
-        
+
         return preview
     }
     

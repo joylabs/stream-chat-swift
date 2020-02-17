@@ -18,12 +18,12 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
     
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
+        imageView.contentMode = .scaleToFill
         addSubview(imageView)
         
         imageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(CGFloat.messageInnerPadding)
             make.top.equalToSuperview().offset(CGFloat.attachmentFileIconTop)
-            make.size.equalTo(CGSize(width: .attachmentFileIconWidth, height: .attachmentFileIconHeight))
         }
         
         return imageView
@@ -60,6 +60,7 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
     }()
     
     func update(maskImage: UIImage?, _ completion: @escaping Competion) {
+        self.backgroundColor = .yellow
         guard let attachment = attachment, let file = attachment.file else {
             return
         }
