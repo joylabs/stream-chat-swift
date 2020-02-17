@@ -23,6 +23,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
     
     // MARK: - Properties
     
+    
     /// A dispose bag for the cell.
     public private(set) var disposeBag = DisposeBag()
     /// A message view style.
@@ -41,6 +42,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
     let reactionsTailImage = UIImageView(frame: .zero)
     var reactionsTailImageLeftConstraint: Constraint?
     var reactionsTailImageRightConstraint: Constraint?
+    var attachmentWidthConstraint: Constraint?
     
     let reactionsLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -246,12 +248,13 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
             make.right.equalTo(-CGFloat.messageHorizontalInset)
             make.top.equalTo(CGFloat.messageVerticalInset).priority(999)
             make.height.greaterThanOrEqualTo(23)
+            self.attachmentWidthConstraint = make.width.equalTo(200 - (CGFloat.messageHorizontalInset * 2)).constraint
+            self.attachmentWidthConstraint?.deactivate()
             make.bottom.equalTo(-CGFloat.messageVerticalInset).priority(999)
         }
         
         contentView.addSubview(messageStackView)
         messageStackView.alignment = style.alignment == .left ? .leading : .trailing
-        
         messageStackView.snp.makeConstraints { make in
             messageStackViewTopConstraint = make.top.equalToSuperview().offset(style.spacing.vertical).priority(999).constraint
             make.bottom.equalToSuperview().priority(999)

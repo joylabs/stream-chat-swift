@@ -51,11 +51,12 @@ extension MessageTableViewCell {
         let isFileAttachment = attachment.type == .file
         
         if isFileAttachment {
-            preview = createAttachmentFilePreview(with: attachment, style: style)
+            preview = createAttachmentFilePreview(with: attachment, style: style, message: message)
         } else {
             preview = createAttachmentPreview(with: attachment,
                                               style: style,
                                               imageBackgroundColor: imageBackgroundColor,
+                                              message: message,
                                               reload: reload)
         }
         
@@ -102,17 +103,20 @@ extension MessageTableViewCell {
     private func createAttachmentPreview(with attachment: Attachment,
                                          style: MessageViewStyle,
                                          imageBackgroundColor: UIColor,
+                                         message: Message,
                                          reload: @escaping () -> Void) -> AttachmentPreview {
         let preview = AttachmentPreview(frame: .zero)
         preview.maxWidth = .attachmentPreviewMaxWidth
         preview.tintColor = style.textColor
         preview.imageView.backgroundColor = imageBackgroundColor
         preview.layer.cornerRadius = 10
-        preview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        
+        if !message.text.isEmpty {
+            preview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        }
+     
         preview.attachment = attachment
         preview.forceToReload = reload
-        
-        
         preview.backgroundColor = attachment.isImage && attachment.actions.isEmpty
             ? style.chatBackgroundColor
             : (style.textColor.isDark ? .chatSuperLightGray : .chatDarkGray)
@@ -121,11 +125,16 @@ extension MessageTableViewCell {
     }
     
     private func createAttachmentFilePreview(with attachment: Attachment,
-                                             style: MessageViewStyle) -> AttachmentFilePreview {
+                                             style: MessageViewStyle,
+                                             message: Message) -> AttachmentFilePreview {
         let preview = AttachmentFilePreview(frame: .zero)
         preview.attachment = attachment
         preview.backgroundColor = style.chatBackgroundColor
-        preview.snp.makeConstraints { $0.height.equalTo(CGFloat.attachmentFilePreviewHeight).priority(999) }
+        preview.updateAttachmentLayout(message)
+        preview.layer.cornerRadius = 10
+        if !message.text.isEmpty {
+            preview.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        }
         return preview
     }
     

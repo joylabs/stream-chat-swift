@@ -93,9 +93,11 @@ extension ChatViewController {
             return cell
         }
         
+        cell.attachmentWidthConstraint?.deactivate()
         // Show attachments.
         if !message.attachments.isEmpty {
             message.attachments.enumerated().forEach { index, attachment in
+                cell.attachmentWidthConstraint?.activate()
                 cell.addAttachment(attachment,
                                    at: index,
                                    from: message,
@@ -110,6 +112,7 @@ extension ChatViewController {
             
             cell.updateBackground(isContinueMessage: !message.isEphemeral, message: message)
         } else {
+            
             cell.updateBackground(isContinueMessage: isContinueMessage, message: message)
         }
         
