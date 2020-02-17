@@ -245,6 +245,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
             make.left.equalTo(CGFloat.messageHorizontalInset)
             make.right.equalTo(-CGFloat.messageHorizontalInset)
             make.top.equalTo(CGFloat.messageVerticalInset).priority(999)
+            make.height.greaterThanOrEqualTo(23)
             make.bottom.equalTo(-CGFloat.messageVerticalInset).priority(999)
         }
         

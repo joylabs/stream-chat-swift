@@ -77,7 +77,7 @@ extension ChatViewController {
             isContinueMessage = true
         }
         
-        cell.updateBackground(isContinueMessage: isContinueMessage)
+        
         
         if showAvatar {
             cell.update(name: message.user.name, date: message.created)
@@ -109,6 +109,8 @@ extension ChatViewController {
             }
             
             cell.updateBackground(isContinueMessage: !message.isEphemeral)
+        } else {
+            cell.updateBackground(isContinueMessage: isContinueMessage, message: message)
         }
         
         guard !message.isEphemeral else {
