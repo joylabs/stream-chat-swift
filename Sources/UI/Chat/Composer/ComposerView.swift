@@ -23,14 +23,13 @@ public final class ComposerView: UIView {
             if styleState != oldValue, let style = style {
                 let styleState = style.style(with: self.styleState)
                 
-                textView.layer.cornerRadius = 10
-                textView.layer.borderWidth = styleStateStyle?.borderWidth ?? 0
-                textView.layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
+                messagesContainer.layer.cornerRadius = 10
+                messagesContainer.layer.borderWidth = styleStateStyle?.borderWidth ?? 0
+                messagesContainer.layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
                 
                 textView.tintColor = styleState.tintColor
                 sendButton.tintColor = styleState.tintColor
-//                attachmentButton.tintColor = styleState.tintColor
-                
+
                 if self.styleState == .edit {
                     sendButton.setTitleColor(styleState.tintColor, for: .normal)
                 } else if self.styleState == .active {
@@ -148,7 +147,12 @@ public final class ComposerView: UIView {
         return button
     }()
     
-    
+    public private(set) lazy var messagesContainer: UIView = {
+        let view = UIView()
+        view.addSubview(textView)
+        view.addSubview(sendButton)
+        return view
+    }()
     
     let sendButtonVisibilityBehaviorSubject = BehaviorSubject<(isHidden: Bool, isEnabled: Bool)>(value: (false, false))
     /// An observable sendButton visibility state.
@@ -227,30 +231,36 @@ public extension ComposerView {
         
         view.addSubview(self)
         
+        
+        let line = UIView()
+        line.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        
         snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin).offset(style.edgeInsets.left)
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin).offset(-style.edgeInsets.right)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin).offset(-style.edgeInsets.bottom)
+            make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
+            make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
             //heightConstraint = make.height.equalTo(style.height).constraint
         }
         
         // Apply style.
         backgroundColor = .white
         clipsToBounds = true
-//        layer.cornerRadius = style.cornerRadius
-//        layer.borderWidth = styleStateStyle?.borderWidth ?? 0
-//        layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
+        addSubview(line)
+        addSubview(customStackView)
+        addSubview(messagesContainer)
+        // Images Collection View.
+        addSubview(imagesCollectionView)
+        // Files Stack View.
+        addSubview(filesStackView)
         
-        // Add attachment button.
-        // addSubview(attachmentButton)
         
-        /*
-        attachmentButton.snp.makeConstraints { make in
-            make.height.equalTo(style.height)
-            make.left.equalToSuperview()
-            make.bottom.equalToSuperview()
+        line.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(1)
         }
-        */
+
+        
         
         // Add buttons.
         if style.sendButtonVisibility != .none {
@@ -260,7 +270,7 @@ public extension ComposerView {
             sendButton.setTitleColor(style.style(with: .disabled).tintColor, for: .disabled)
             sendButtonVisibilityBehaviorSubject.onNext((sendButton.isHidden, sendButton.isEnabled))
             
-            addSubview(sendButton)
+//            addSubview(sendButton)
             
             sendButton.snp.makeConstraints { make in
                 make.height.equalTo(style.height)
@@ -268,41 +278,39 @@ public extension ComposerView {
                 sendButtonRightConstraint = make.right.equalToSuperview().constraint
             }
         }
-        addSubview(customStackView)
-        
-        // Images Collection View.
-        addSubview(imagesCollectionView)
-        
-        imagesCollectionView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(customStackView.snp.bottom)
-        }
-        
-        // Files Stack View.
-        addSubview(filesStackView)
-        
-        filesStackView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(customStackView.snp.bottom)
-        }
-        
-        
         
         customStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
         }
         
+        imagesCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(customStackView.snp.bottom)
+            make.left.right.equalToSuperview()
+        }
         
+        filesStackView.snp.makeConstraints { make in
+            make.top.equalTo(imagesCollectionView.snp.bottom)
+            make.left.right.equalToSuperview()
+        }
         
-        // Add text view.
-        addSubview(textView)
+        messagesContainer.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalTo(customStackView.snp.bottom).offset(10)
+            make.bottom.equalToSuperview().offset(-10)
+        }
+                
+        
+
+        
         updateTextHeightIfNeeded()
         textView.keyboardAppearance = style.textColor.isDark ? .default : .dark
         textView.backgroundColor = backgroundColor
         
         textView.snp.makeConstraints { make in
-            textViewTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(textViewPadding).priority(990).constraint
+            textViewTopConstraint = make.top.equalToSuperview().offset(textViewPadding).priority(990).constraint
             make.bottom.equalToSuperview().offset(-textViewPadding)
             if sendButton.superview == nil {
                 make.right.equalToSuperview().offset(-textViewPadding)
@@ -324,15 +332,8 @@ public extension ComposerView {
         }
         
         textView.setContentCompressionResistancePriority(.required, for: .vertical)
-        
-        // Blurred background.
-//        if style.backgroundColor == .clear {
-//            addBlurredBackground(blurEffectStyle: style.textColor.isDark ? .extraLight : .dark)
-//        }
-        
         // Add placeholder.
         self.placeholderText = placeholderText
-        
         updateToolbarIfNeeded()
         updateStyleState()
     }
