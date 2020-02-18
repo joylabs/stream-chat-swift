@@ -26,7 +26,7 @@ public final class ComposerView: UIView {
                 layer.borderColor = styleState.tintColor.cgColor
                 textView.tintColor = styleState.tintColor
                 sendButton.tintColor = styleState.tintColor
-                attachmentButton.tintColor = styleState.tintColor
+//                attachmentButton.tintColor = styleState.tintColor
                 
                 if self.styleState == .edit {
                     sendButton.setTitleColor(styleState.tintColor, for: .normal)
@@ -152,7 +152,7 @@ public final class ComposerView: UIView {
                 sendButtonVisibilityBehaviorSubject.onNext((sendButton.isHidden, sendButton.isEnabled))
             }
             
-            attachmentButton.isEnabled = isEnabled
+            // attachmentButton.isEnabled = isEnabled
             imagesCollectionView.isUserInteractionEnabled = isEnabled
             imagesCollectionView.alpha = isEnabled ? 1 : 0.5
             styleState = isEnabled ? .normal : .disabled
@@ -168,7 +168,7 @@ public extension ComposerView {
     /// - Parameters:
     ///   - view: a superview.
     ///   - placeholderText: a placeholder text.
-    func addToSuperview(_ view: UIView, placeholderText: String = "Write a message") {
+    func addToSuperview(_ view: UIView, placeholderText: String = "Type here") {
         guard let style = style else {
             return
         }
@@ -191,13 +191,15 @@ public extension ComposerView {
         layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
         
         // Add attachment button.
-        addSubview(attachmentButton)
+        // addSubview(attachmentButton)
         
+        /*
         attachmentButton.snp.makeConstraints { make in
             make.height.equalTo(style.height)
             make.left.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        */
         
         // Add buttons.
         if style.sendButtonVisibility != .none {
@@ -248,16 +250,16 @@ public extension ComposerView {
                 make.right.equalTo(sendButton.snp.left)
             }
             
-            if attachmentButton.isHidden {
+            if true {
                 make.left.equalToSuperview().offset(textViewPadding)
             } else {
-                var offset = textView.textContainer.lineFragmentPadding
-                
-                if let borderWidth = style.states[.active]?.borderWidth, borderWidth > 0 {
-                    offset += borderWidth
-                }
-                
-                make.left.equalTo(attachmentButton.snp.right).offset(-offset)
+//                var offset = textView.textContainer.lineFragmentPadding
+//
+//                if let borderWidth = style.states[.active]?.borderWidth, borderWidth > 0 {
+//                    offset += borderWidth
+//                }
+//
+//                make.left.equalTo(attachmentButton.snp.right).offset(-offset)
             }
         }
         
