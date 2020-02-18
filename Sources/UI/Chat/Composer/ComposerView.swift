@@ -78,10 +78,11 @@ public final class ComposerView: UIView {
     
     public lazy var topicButton: UIButton = {
         let button = UIButton()
-        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 0)
+        button.contentEdgeInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 0)
         button.backgroundColor = UIColor(displayP3Red: 226/255, green: 246/255, blue: 253/255, alpha: 1)
         button.setTitleColor(UIColor(displayP3Red: 0, green: 155/255, blue: 234/255, alpha: 1), for: .normal)
         button.setTitle("TOPIC", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Lato-Bold", size: 12)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
         button.setImage(UIImage.Icons.topic, for: .normal)
@@ -114,7 +115,7 @@ public final class ComposerView: UIView {
     
     public private(set) lazy var customStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.alignment = .leading
+        stackView.alignment = .center
         stackView.distribution = .equalSpacing
         stackView.addArrangedSubview(topicButton)
         stackView.addArrangedSubview(actionsStackView)
@@ -283,7 +284,7 @@ public extension ComposerView {
         }
         
         customStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(4)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
         }
@@ -308,7 +309,7 @@ public extension ComposerView {
             belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).offset(10).constraint
             belowImageViewTopConstraint?.deactivate()
             
-            defaultTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(10).constraint
+            defaultTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(4).constraint
             
             make.bottom.equalToSuperview().offset(-10)
         }
@@ -319,8 +320,8 @@ public extension ComposerView {
         textView.backgroundColor = backgroundColor
         
         textView.snp.makeConstraints { make in
-            textViewTopConstraint = make.top.equalToSuperview().offset(textViewPadding).priority(990).constraint
-            make.bottom.equalToSuperview().offset(-textViewPadding)
+            textViewTopConstraint = make.top.equalToSuperview().offset(5).priority(990).constraint
+            make.bottom.equalToSuperview().offset(-5)
             if sendButton.superview == nil {
                 make.right.equalToSuperview().offset(-textViewPadding)
             } else {
