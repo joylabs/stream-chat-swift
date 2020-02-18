@@ -70,6 +70,51 @@ public final class ComposerView: UIView {
     /// An editing state of the composer.
     public var isEditing: Bool = false
     
+    
+    public lazy var topicButton: UIButton = {
+        let button = UIButton()
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 0)
+        button.backgroundColor = UIColor(displayP3Red: 226/255, green: 246/255, blue: 253/255, alpha: 1)
+        button.setTitleColor(UIColor(displayP3Red: 0, green: 155/255, blue: 234/255, alpha: 1), for: .normal)
+        button.setTitle("TOPIC", for: .normal)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
+        button.setImage(UIImage.Icons.topic, for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    public lazy var attachImageButton: UIButton = {
+        let button = UIButton()
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
+        button.setImage(UIImage.Icons.attachImage, for: .normal)
+        return button
+    }()
+    
+    public lazy var attachDocumentButton: UIButton = {
+        let button = UIButton()
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
+        button.setImage(UIImage.Icons.attachDocument, for: .normal)
+        return button
+    }()
+    
+    public private(set) lazy var actionsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.alignment = .center
+        stackView.spacing = 0
+        stackView.addArrangedSubview(attachImageButton)
+        stackView.addArrangedSubview(attachDocumentButton)
+        return stackView
+    }()
+    
+    public private(set) lazy var customStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.alignment = .leading
+        stackView.distribution = .equalSpacing
+        stackView.addArrangedSubview(topicButton)
+        stackView.addArrangedSubview(actionsStackView)
+        return stackView
+    }()
     /// A placeholder label.
     /// You have to use the `placeholderText` property to change the value of the placeholder label.
     public private(set) lazy var placeholderLabel: UILabel = {
@@ -180,7 +225,7 @@ public extension ComposerView {
             make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin).offset(style.edgeInsets.left)
             make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin).offset(-style.edgeInsets.right)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin).offset(-style.edgeInsets.bottom)
-            heightConstraint = make.height.equalTo(style.height).constraint
+            //heightConstraint = make.height.equalTo(style.height).constraint
         }
         
         // Apply style.
@@ -217,13 +262,14 @@ public extension ComposerView {
                 sendButtonRightConstraint = make.right.equalToSuperview().constraint
             }
         }
+        addSubview(customStackView)
         
         // Images Collection View.
         addSubview(imagesCollectionView)
         
         imagesCollectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalToSuperview()
+            make.top.equalTo(customStackView.snp.bottom)
         }
         
         // Files Stack View.
@@ -231,8 +277,17 @@ public extension ComposerView {
         
         filesStackView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalToSuperview()
+            make.top.equalTo(customStackView.snp.bottom)
         }
+        
+        
+        
+        customStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        
         
         // Add text view.
         addSubview(textView)
@@ -241,7 +296,7 @@ public extension ComposerView {
         textView.backgroundColor = backgroundColor
         
         textView.snp.makeConstraints { make in
-            textViewTopConstraint = make.top.equalToSuperview().offset(textViewPadding).priority(990).constraint
+            textViewTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(textViewPadding).priority(990).constraint
             make.bottom.equalToSuperview().offset(-textViewPadding)
             
             if sendButton.superview == nil {

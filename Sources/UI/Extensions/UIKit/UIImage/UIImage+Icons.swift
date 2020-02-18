@@ -34,6 +34,10 @@ extension UIImage {
     
     /// An icons images.
     public struct Icons {
+        public static let attachDocument: UIImage = UIImage.chat(named: "attachDocument")
+        public static let attachImage: UIImage = UIImage.chat(named: "attachImage")
+        /// A topic icon.
+        public static let topic: UIImage = UIImage.chat(named: "topicIcon")
         /// A close icon.
         public static let close: UIImage = UIImage.chat(named: "closeIcon")
         /// A delivered icon.
