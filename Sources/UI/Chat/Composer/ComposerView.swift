@@ -72,6 +72,9 @@ public final class ComposerView: UIView {
     /// An editing state of the composer.
     public var isEditing: Bool = false
     
+    public var belowFileStackTopConstraint: Constraint?
+    public var belowImageViewTopConstraint: Constraint?
+    public var defaultTopConstraint: Constraint?
     
     public lazy var topicButton: UIButton = {
         let button = UIButton()
@@ -298,12 +301,18 @@ public extension ComposerView {
         messagesContainer.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.top.equalTo(customStackView.snp.bottom).offset(10)
+            
+            belowFileStackTopConstraint = make.top.equalTo(filesStackView.snp.bottom).offset(10).constraint
+            belowFileStackTopConstraint?.deactivate()
+            
+            belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).offset(10).constraint
+            belowImageViewTopConstraint?.deactivate()
+            
+            defaultTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(10).constraint
+            
             make.bottom.equalToSuperview().offset(-10)
         }
                 
-        
-
         
         updateTextHeightIfNeeded()
         textView.keyboardAppearance = style.textColor.isDark ? .default : .dark
@@ -336,6 +345,7 @@ public extension ComposerView {
         self.placeholderText = placeholderText
         updateToolbarIfNeeded()
         updateStyleState()
+        
     }
     
     /// Reset states of all child views and clear all added/generated data.

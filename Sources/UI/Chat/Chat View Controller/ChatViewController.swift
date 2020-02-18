@@ -81,7 +81,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         tableView.registerMessageCell(style: style.incomingMessage)
         tableView.registerMessageCell(style: style.outgoingMessage)
         tableView.register(cellType: StatusTableViewCell.self)
-        let bottomInset = style.composer.height + style.composer.edgeInsets.top + style.composer.edgeInsets.bottom
+        let bottomInset = style.composer.height + style.composer.edgeInsets.top + style.composer.edgeInsets.bottom + 33
         tableView.contentInset = UIEdgeInsets(top: style.incomingMessage.edgeInsets.top, left: 0, bottom: bottomInset, right: 0)
         view.insertSubview(tableView, at: 0)
         tableView.makeEdgesEqualToSuperview()

@@ -43,69 +43,40 @@ extension ComposerView {
     }
     
     private func updateTextHeight(_ height: CGFloat) {
-        guard let heightConstraint = heightConstraint, let style = style else {
-            return
-        }
+        //let heightConstraint = heightConstraint,
         
-        var maxHeight = CGFloat.composerMaxHeight
-        
-        if !imagesCollectionView.isHidden {
-            maxHeight -= .composerAttachmentsHeight
-        }
-        
-        if !filesStackView.isHidden {
-            let filesHeight = CGFloat.composerFileHeight * CGFloat(filesStackView.arrangedSubviews.count)
-            maxHeight -= filesHeight
-        }
-        
-        var height = min(max(height + 2 * textViewPadding, style.height), maxHeight)
         imagesCollectionView.isHidden = imageUploaderItems.isEmpty
         filesStackView.isHidden = isUploaderFilesEmpty
-        var textViewTopOffset = textViewPadding
         
-        if !imagesCollectionView.isHidden {
-            height += .composerAttachmentsHeight
-            textViewTopOffset += .composerAttachmentsHeight
+        
+        if imagesCollectionView.isHidden {
+            belowImageViewTopConstraint?.deactivate()
+            belowFileStackTopConstraint?.deactivate()
+            defaultTopConstraint?.activate()
+            
+        } else {
+            belowImageViewTopConstraint?.activate()
+            belowFileStackTopConstraint?.deactivate()
+            defaultTopConstraint?.deactivate()
         }
         
-        if !filesStackView.isHidden {
-            let filesHeight = CGFloat.composerFileHeight * CGFloat(filesStackView.arrangedSubviews.count)
-            height += filesHeight
-            textViewTopOffset += filesHeight
+        if imagesCollectionView.isHidden {
+            if filesStackView.isHidden {
+                belowImageViewTopConstraint?.deactivate()
+                belowFileStackTopConstraint?.deactivate()
+                defaultTopConstraint?.activate()
+            } else {
+                belowImageViewTopConstraint?.deactivate()
+                belowFileStackTopConstraint?.activate()
+                defaultTopConstraint?.deactivate()
+            }
         }
-        
         textView.isScrollEnabled = height >= CGFloat.composerMaxHeight
-        
-        if heightConstraint.layoutConstraints.first?.constant != height {
-            heightConstraint.update(offset: height)
-            setNeedsLayout()
-            layoutIfNeeded()
-        }
-        
-        if textViewTopConstraint?.layoutConstraints.first?.constant != textViewTopOffset {
-            textViewTopConstraint?.update(offset: textViewTopOffset)
-            setNeedsLayout()
-            layoutIfNeeded()
-        }
-        
         updateToolbarIfNeeded()
     }
     
     func updateToolbarIfNeeded() {
-        guard let style = style, let composerViewHeight = heightConstraint?.layoutConstraints.first?.constant else {
-            return
-        }
-        
-        let height = composerViewHeight + style.edgeInsets.top + style.edgeInsets.bottom
-        
-        guard toolBar.frame.height != height else {
-            return
-        }
-        
-        toolBar = UIToolbar(frame: CGRect(width: UIScreen.main.bounds.width, height: height))
-        toolBar.isHidden = true
-        textView.inputAccessoryView = toolBar
-        textView.reloadInputViews()
+
     }
 }
 

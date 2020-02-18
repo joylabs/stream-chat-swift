@@ -20,6 +20,7 @@ extension Reactive where Base: ChatViewController {
         return Binder<KeyboardNotification>(base) { chatViewController, keyboardNotification in
             var bottom: CGFloat = 0
             
+            print(keyboardNotification.height)
             if keyboardNotification.isVisible {
                 bottom = keyboardNotification.height
                     - chatViewController.composerView.toolBar.frame.height
