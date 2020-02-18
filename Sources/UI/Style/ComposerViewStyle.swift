@@ -69,7 +69,8 @@ public struct ComposerViewStyle {
                 sendButtonVisibility: ChatViewStyleVisibility = .whenActive,
                 states: States = [.active: .init(tintColor: .chatLightBlue, borderWidth: 2),
                                   .edit: .init(tintColor: .chatGreen, borderWidth: 2),
-                                  .disabled: .init(tintColor: .chatGray, borderWidth: 2)]) {
+                                  .disabled: .init(tintColor: .chatGray, borderWidth: 2),
+                                  .normal: .init(tintColor: UIColor.lightGray.withAlphaComponent(0.5), borderWidth: 2)]) {
         self.font = font
         self.textColor = textColor
         self.placeholderTextColor = placeholderTextColor

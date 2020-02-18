@@ -173,7 +173,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
         needsToSetup = false
         self.style = style
         selectionStyle = .none
-        backgroundColor = style.chatBackgroundColor
+        backgroundColor = .clear
         bottomPaddingView.backgroundColor = backgroundColor
         
         // MARK: Date

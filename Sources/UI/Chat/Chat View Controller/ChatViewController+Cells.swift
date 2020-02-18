@@ -23,7 +23,7 @@ extension ChatViewController {
         
         let messageStyle = message.isOwn ? style.outgoingMessage : style.incomingMessage
         let cell = tableView.dequeueMessageCell(for: indexPath, style: messageStyle)
-        
+        cell.backgroundColor = .clear
         if message.isDeleted {
             cell.update(info: "This message was deleted.", date: message.deleted)
         } else if message.isEphemeral {
