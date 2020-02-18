@@ -78,7 +78,6 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         tableView.separatorStyle = .none
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = UIColor(displayP3Red: 239/255, green: 237/255, blue: 255/255, alpha: 1)
         tableView.registerMessageCell(style: style.incomingMessage)
         tableView.registerMessageCell(style: style.outgoingMessage)
         tableView.register(cellType: StatusTableViewCell.self)

@@ -273,12 +273,10 @@ public extension ComposerView {
             sendButton.setTitleColor(style.style(with: .active).tintColor, for: .normal)
             sendButton.setTitleColor(style.style(with: .disabled).tintColor, for: .disabled)
             sendButtonVisibilityBehaviorSubject.onNext((sendButton.isHidden, sendButton.isEnabled))
-            
-//            addSubview(sendButton)
-            
+  
             sendButton.snp.makeConstraints { make in
-                make.height.equalTo(style.height)
-                make.bottom.equalToSuperview()
+                
+                make.bottom.equalToSuperview().offset(-10)
                 sendButtonRightConstraint = make.right.equalToSuperview().constraint
             }
         }
@@ -328,17 +326,7 @@ public extension ComposerView {
                 make.right.equalTo(sendButton.snp.left)
             }
             
-            if true {
-                make.left.equalToSuperview().offset(textViewPadding)
-            } else {
-//                var offset = textView.textContainer.lineFragmentPadding
-//
-//                if let borderWidth = style.states[.active]?.borderWidth, borderWidth > 0 {
-//                    offset += borderWidth
-//                }
-//
-//                make.left.equalTo(attachmentButton.snp.right).offset(-offset)
-            }
+            make.left.equalToSuperview().offset(textViewPadding)
         }
         
         textView.setContentCompressionResistancePriority(.required, for: .vertical)
