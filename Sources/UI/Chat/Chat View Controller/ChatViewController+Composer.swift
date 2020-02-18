@@ -353,15 +353,15 @@ extension ChatViewController {
                     }
                 }
             case .camera:
-//                if UIImagePickerController.hasPermissionDescription(for: .camera),
-//                    UIImagePickerController.isSourceTypeAvailable(.camera) {
+                if UIImagePickerController.hasPermissionDescription(for: .camera),
+                    UIImagePickerController.isSourceTypeAvailable(.camera) {
                     addButtonToAddFileView(container,
                                            icon: UIImage.Icons.camera,
                                            title: "Upload from a camera",
                                            sourceType: .photo(.camera)) { [weak self] in
                                             self?.showImagePicker(composerAddFileViewSourceType: $0)
                     }
-                //}
+                }
             case .file:
                 addButtonToAddFileView(container,
                                        icon: UIImage.Icons.file,
@@ -442,6 +442,14 @@ extension ChatViewController {
     }
     
     private func showImagePicker(composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType) {
+        if composerView.imageUploaderItems.count > 0 {
+            let alert = UIAlertController(title: "Memo", message: "You can only upload one image at this time.", preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+            self.present(alert, animated: true)
+            return
+        }
         guard case .photo(let pickerSourceType) = sourceType else {
             return
         }
@@ -465,6 +473,15 @@ extension ChatViewController {
     }
     
     private func showDocumentPicker() {
+        if composerView.uploader?.items.count ?? 0 > 0 {
+            let alert = UIAlertController(title: "Memo", message: "You can only upload one document at this time.", preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+            self.present(alert, animated: true)
+            return
+        }
+        
         let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [.anyFileType], in: .import)
         documentPickerViewController.allowsMultipleSelection = true
         
