@@ -22,8 +22,11 @@ public final class ComposerView: UIView {
         didSet {
             if styleState != oldValue, let style = style {
                 let styleState = style.style(with: self.styleState)
-                layer.borderWidth = styleState.borderWidth
-                layer.borderColor = styleState.tintColor.cgColor
+                
+                textView.layer.cornerRadius = 10
+                textView.layer.borderWidth = styleStateStyle?.borderWidth ?? 0
+                textView.layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
+                
                 textView.tintColor = styleState.tintColor
                 sendButton.tintColor = styleState.tintColor
 //                attachmentButton.tintColor = styleState.tintColor
@@ -145,6 +148,8 @@ public final class ComposerView: UIView {
         return button
     }()
     
+    
+    
     let sendButtonVisibilityBehaviorSubject = BehaviorSubject<(isHidden: Bool, isEnabled: Bool)>(value: (false, false))
     /// An observable sendButton visibility state.
     public private(set) lazy var sendButtonVisibility = sendButtonVisibilityBehaviorSubject
@@ -219,6 +224,7 @@ public extension ComposerView {
         }
         
         // Add to superview.
+        
         view.addSubview(self)
         
         snp.makeConstraints { make in
@@ -229,11 +235,11 @@ public extension ComposerView {
         }
         
         // Apply style.
-        backgroundColor = style.backgroundColor
+        backgroundColor = .white
         clipsToBounds = true
-        layer.cornerRadius = style.cornerRadius
-        layer.borderWidth = styleStateStyle?.borderWidth ?? 0
-        layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
+//        layer.cornerRadius = style.cornerRadius
+//        layer.borderWidth = styleStateStyle?.borderWidth ?? 0
+//        layer.borderColor = styleStateStyle?.tintColor.cgColor ?? nil
         
         // Add attachment button.
         // addSubview(attachmentButton)
@@ -298,7 +304,6 @@ public extension ComposerView {
         textView.snp.makeConstraints { make in
             textViewTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(textViewPadding).priority(990).constraint
             make.bottom.equalToSuperview().offset(-textViewPadding)
-            
             if sendButton.superview == nil {
                 make.right.equalToSuperview().offset(-textViewPadding)
             } else {
@@ -321,9 +326,9 @@ public extension ComposerView {
         textView.setContentCompressionResistancePriority(.required, for: .vertical)
         
         // Blurred background.
-        if style.backgroundColor == .clear {
-            addBlurredBackground(blurEffectStyle: style.textColor.isDark ? .extraLight : .dark)
-        }
+//        if style.backgroundColor == .clear {
+//            addBlurredBackground(blurEffectStyle: style.textColor.isDark ? .extraLight : .dark)
+//        }
         
         // Add placeholder.
         self.placeholderText = placeholderText
