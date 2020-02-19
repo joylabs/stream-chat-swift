@@ -70,6 +70,56 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     private(set) lazy var composerCommandsContainerView = createComposerCommandsContainerView()
     private(set) lazy var composerAddFileContainerView = createComposerAddFileContainerView(title: "Add a file")
     
+    
+    public private(set) lazy var aboutThisConversationView: UIView = {
+        
+        let container = UIView()
+        let stackView = UIStackView()
+        stackView.alignment = .center
+        stackView.distribution = .equalCentering
+        stackView.spacing = 5
+        let label = UILabel()
+        label.text = "About this conversation"
+        label.font = UIFont(name: "Lato-Regular", size: 12)
+        label.textAlignment = .right
+        label.textColor = UIColor(red: 49/255, green:  54/255, blue: 58/255, alpha: 0.4)
+        label.backgroundColor = .white
+
+
+        stackView.addArrangedSubview(label)
+        if #available(iOS 13.0, *) {
+            if let chevron = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate) {
+                let imageView = UIImageView()
+                imageView.contentMode = .scaleAspectFit
+                imageView.tintColor = UIColor(red: 86/255, green: 120/255, blue: 143/255, alpha: 1)
+                imageView.image = chevron
+                stackView.addArrangedSubview(imageView)
+                
+                imageView.snp.makeConstraints { make in
+                    make.width.equalTo(10)
+                }
+            }
+        }
+        
+        
+        
+        view.addSubview(container)
+        container.addSubview(stackView)
+        
+        container.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.topMargin)
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.height.equalTo(30)
+            make.top.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
+        return container
+        
+    }()
     /// A table view of messages.
     public private(set) lazy var tableView: TableView = {
         let tableView = TableView(frame: .zero, style: .plain)
@@ -86,11 +136,10 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         tableView.contentInset = UIEdgeInsets(top: style.incomingMessage.edgeInsets.top, left: 0, bottom: bottomInset, right: 0)
         view.insertSubview(tableView, at: 0)
         tableView.snp.makeConstraints { make in
-            make.leading.trailing.top.equalToSuperview()
+            make.top.equalTo(aboutThisConversationView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
-
-        //tableView.makeEdgesEqualToSuperview()
         
         let footerView = ChatFooterView(frame: CGRect(width: 0, height: .chatFooterHeight))
         footerView.backgroundColor = tableView.backgroundColor
@@ -141,9 +190,9 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
                 }
                 
                 return false
-            }
-            .drive(onNext: { [weak self] in self?.updateTableView(with: $0) })
-            .disposed(by: disposeBag)
+        }
+        .drive(onNext: { [weak self] in self?.updateTableView(with: $0) })
+        .disposed(by: disposeBag)
         
         if presenter.isEmpty {
             channelPresenter?.reload()
@@ -391,7 +440,7 @@ extension ChatViewController {
             
         case .disconnected:
             return
-                
+            
         case .error(let error):
             show(error: error)
         }
