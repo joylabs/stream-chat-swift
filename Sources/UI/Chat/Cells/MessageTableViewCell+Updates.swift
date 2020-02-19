@@ -29,6 +29,14 @@ extension MessageTableViewCell {
                 let imagePath = message.isOwn ? "OutgoingMessage\(attachmentPath)Bg" : "IncomingMessage\(attachmentPath)Bg"
                 let image = UIImage(named: imagePath, in: bundle, compatibleWith: nil)
                 messageContainerView.image = image ?? messageBackgroundImage
+                
+                if !message.attachments.isEmpty {
+                    if message.isOwn {
+                        messageLabel.textAlignment = .right
+                    } else {
+                        messageLabel.textAlignment = .left
+                    }
+                }
                 return
             }
             
