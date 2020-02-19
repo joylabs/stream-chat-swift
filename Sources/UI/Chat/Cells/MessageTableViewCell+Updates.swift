@@ -17,7 +17,9 @@ extension MessageTableViewCell {
     func updateBackground(isContinueMessage: Bool, message: Message? = nil) {
         if let text = messageLabel.text, text.messageContainsOnlyEmoji {
             messageLabel.font = style.emojiFont
-            messageLabel.backgroundColor = style.chatBackgroundColor
+            messageContainerView.layer.shadowOpacity = 0
+            messageContainerView.backgroundColor = .clear
+            messageLabel.backgroundColor = .clear
             return
         }
         messageContainerView.backgroundColor = .clear
