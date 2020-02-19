@@ -244,13 +244,13 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
         messageContainerView.addSubview(messageLabel)
         
         messageLabel.snp.makeConstraints { make in
-            make.left.equalTo(CGFloat.messageHorizontalInset)
-            make.right.equalTo(-CGFloat.messageHorizontalInset)
-            make.top.equalTo(CGFloat.messageVerticalInset).priority(999)
+            make.left.equalTo(8)
+            make.right.equalTo(-8)
+            make.top.equalTo(4).priority(999)
             make.height.greaterThanOrEqualTo(23)
-            self.attachmentWidthConstraint = make.width.equalTo(200 - (CGFloat.messageHorizontalInset * 2)).constraint
+            self.attachmentWidthConstraint = make.width.equalTo(200 - 16).constraint
             self.attachmentWidthConstraint?.deactivate()
-            make.bottom.equalTo(-CGFloat.messageVerticalInset).priority(999)
+            make.bottom.equalTo(-6).priority(999)
         }
         
         contentView.addSubview(messageStackView)

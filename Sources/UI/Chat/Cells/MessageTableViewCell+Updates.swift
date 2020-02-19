@@ -20,10 +20,22 @@ extension MessageTableViewCell {
             messageLabel.backgroundColor = style.chatBackgroundColor
             return
         }
+        messageContainerView.backgroundColor = .clear
 
+        
         if let messageBackgroundImage = messageBackgroundImage(isContinueMessage: isContinueMessage) {
             
             if let message = message {
+                if !message.text.isEmpty {
+                    messageContainerView.layer.shadowOpacity = 0.18
+                    messageContainerView.layer.shadowColor = message.isOwn ? UIColor(red: 107/255, green: 198/255, blue: 255, alpha: 1).cgColor : UIColor(red: 164/255, green: 172/255, blue: 179/255, alpha: 1).cgColor
+                    messageContainerView.layer.shadowRadius = 2
+                    messageContainerView.clipsToBounds = false
+                    messageContainerView.layer.shadowOffset = message.isOwn ? CGSize(width: 2, height: 1) : CGSize(width: -1, height: -1)
+                }
+
+                
+                
                 let bundle = Bundle(for: MessageTableViewCell.self)
                 let attachmentPath = message.attachments.isEmpty ? "" : "Attachment"
                 let imagePath = message.isOwn ? "OutgoingMessage\(attachmentPath)Bg" : "IncomingMessage\(attachmentPath)Bg"
@@ -42,7 +54,7 @@ extension MessageTableViewCell {
             
             messageContainerView.image = messageBackgroundImage
         } else {
-            messageContainerView.backgroundColor = style.backgroundColor
+            messageContainerView.backgroundColor = .clear
             
             if style.borderWidth > 0 {
                 messageContainerView.layer.borderWidth = style.borderWidth
