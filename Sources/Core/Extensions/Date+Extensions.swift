@@ -13,11 +13,11 @@ extension Date {
 }
 
 extension Date {
-    var isToday: Bool {
+    public var isToday: Bool {
         return Calendar.current.isDateInToday(self)
     }
     
-    var isYesterday: Bool {
+    public var isYesterday: Bool {
         return Calendar.current.isDateInYesterday(self)
     }
 }
