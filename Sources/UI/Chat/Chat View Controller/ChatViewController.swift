@@ -85,7 +85,12 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         let bottomInset = style.composer.height + style.composer.edgeInsets.top + style.composer.edgeInsets.bottom + 33
         tableView.contentInset = UIEdgeInsets(top: style.incomingMessage.edgeInsets.top, left: 0, bottom: bottomInset, right: 0)
         view.insertSubview(tableView, at: 0)
-        tableView.makeEdgesEqualToSuperview()
+        tableView.snp.makeConstraints { make in
+            make.leading.trailing.top.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+        }
+
+        //tableView.makeEdgesEqualToSuperview()
         
         let footerView = ChatFooterView(frame: CGRect(width: 0, height: .chatFooterHeight))
         footerView.backgroundColor = tableView.backgroundColor
