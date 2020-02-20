@@ -104,8 +104,10 @@ fileprivate final class ImagePickerDelegate: NSObject, UINavigationControllerDel
     
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        completion(PickedImage(info: info), .authorized)
-        picker.dismiss(animated: true)
+        
+        picker.dismiss(animated: true) { [weak self] in
+            self?.completion(PickedImage(info: info), .authorized)
+        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

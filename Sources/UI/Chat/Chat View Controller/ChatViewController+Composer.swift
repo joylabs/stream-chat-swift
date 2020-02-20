@@ -246,6 +246,7 @@ extension ChatViewController {
 // MARK: - Composer Commands
 
 extension ChatViewController {
+
     
     func createComposerCommandsContainerView() -> ComposerHelperContainerView {
         let container = createComposerHelperContainerView(title: "Commands", closeButtonIsHidden: true)
@@ -454,11 +455,7 @@ extension ChatViewController {
     
     private func showImagePicker(composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType) {
         if composerView.imageUploaderItems.count > 0 {
-            let alert = UIAlertController(title: "Memo", message: "You can only upload one image at this time.", preferredStyle: .alert)
-
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-            self.present(alert, animated: true)
+            self.showAlertError("You can only upload one image at this time.")
             return
         }
         guard case .photo(let pickerSourceType) = sourceType else {
@@ -476,7 +473,11 @@ extension ChatViewController {
             }
             
             if let pickedImage = pickedImage, let uploaderItem = UploaderItem(channel: channel, pickedImage: pickedImage) {
-                self?.composerView.addImageUploaderItem(uploaderItem)
+                if self?.validateFileSize(uploaderItem) ?? true {
+                  self?.composerView.addImageUploaderItem(uploaderItem)
+                } else {
+                    self?.showAlertError("This file is more than 25mb, please upload a smaller file.")
+                }
             }
         }
         
@@ -485,11 +486,7 @@ extension ChatViewController {
     
     private func showDocumentPicker() {
         if composerView.uploader?.items.count ?? 0 > 0 {
-            let alert = UIAlertController(title: "Memo", message: "You can only upload one document at this time.", preferredStyle: .alert)
-
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-            self.present(alert, animated: true)
+            self.showAlertError("You can only upload one document at this time.")
             return
         }
         
@@ -500,13 +497,34 @@ extension ChatViewController {
             .takeUntil(documentPickerViewController.rx.deallocated)
             .subscribe(onNext: { [weak self] in
                 if let self = self, let channel = self.channelPresenter?.channel {
-                    $0.forEach { url in self.composerView.addFileUploaderItem(UploaderItem(channel: channel, url: url)) }
+                    $0.forEach { url in
+                        let item = UploaderItem(channel: channel, url: url)
+                        if self.validateFileSize(item) {
+                            return self.composerView.addFileUploaderItem(item)
+                        } else {
+                            self.showAlertError("This file is more than 25mb, please upload a smaller file.")
+                            return
+                        }
+                        
+                    }
                 }
             })
             .disposed(by: disposeBag)
         
         present(documentPickerViewController, animated: true)
         hideAddFileView()
+    }
+    
+    func validateFileSize(_ item: UploaderItem) -> Bool {
+        item.fileSize <= 26_214_400
+    }
+    
+    func showAlertError(_ message: String) {
+        let alert = UIAlertController(title: "Memo", message: message, preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        self.present(alert, animated: true)
     }
 }
 
