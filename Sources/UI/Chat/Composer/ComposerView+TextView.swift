@@ -47,7 +47,7 @@ extension ComposerView {
         
         imagesCollectionView.isHidden = imageUploaderItems.isEmpty
         filesStackView.isHidden = isUploaderFilesEmpty
-        
+        secondDivider.isHidden = imagesCollectionView.isHidden && filesStackView.isHidden
         
         if imagesCollectionView.isHidden {
             belowImageViewTopConstraint?.deactivate()

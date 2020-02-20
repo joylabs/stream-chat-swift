@@ -65,7 +65,7 @@ extension ComposerView: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     private func uploaderItem(at indexPath: IndexPath) -> UploaderItem? {
-        let imageIndex = indexPath.item - (imagesAddAction == nil ? 0 : 1)
+        let imageIndex = indexPath.item
         
         guard imageIndex >= 0, imageIndex < imageUploaderItems.count else {
             return nil
@@ -75,19 +75,14 @@ extension ComposerView: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageUploaderItems.isEmpty ? 0 : imageUploaderItems.count + (imagesAddAction == nil ? 0 : 1)
+        return imageUploaderItems.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(for: indexPath) as AttachmentCollectionViewCell
         
         guard let item = uploaderItem(at: indexPath) else {
-            if indexPath.item == 0, let imagesAddAction = imagesAddAction {
-                cell.updatePlusButton(tintColor: style?.textColor, action: imagesAddAction)
-                return cell
-            }
-            
-            return .unused
+            return cell
         }
         
         cell.imageView.image = item.image

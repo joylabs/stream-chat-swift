@@ -76,6 +76,20 @@ public final class ComposerView: UIView {
     public var belowImageViewTopConstraint: Constraint?
     public var defaultTopConstraint: Constraint?
     
+    
+    public lazy var firstDivider: UIView = {
+        let firstDivider = UIView()
+        firstDivider.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        return firstDivider
+    }()
+    
+    public lazy var secondDivider: UIView = {
+        let secondDivider = UIView()
+        secondDivider.isHidden = true
+        secondDivider.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        return secondDivider
+    }()
+    
     public lazy var topicButton: UIButton = {
         let button = UIButton()
         button.contentEdgeInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 0)
@@ -236,8 +250,7 @@ public extension ComposerView {
         view.addSubview(self)
         
         
-        let line = UIView()
-        line.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+
         
         snp.makeConstraints { make in
             make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
@@ -249,7 +262,8 @@ public extension ComposerView {
         // Apply style.
         backgroundColor = .white
         clipsToBounds = true
-        addSubview(line)
+        addSubview(firstDivider)
+        addSubview(secondDivider)
         addSubview(customStackView)
         addSubview(messagesContainer)
         // Images Collection View.
@@ -258,13 +272,17 @@ public extension ComposerView {
         addSubview(filesStackView)
         
         
-        line.snp.makeConstraints { make in
+        firstDivider.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
-
         
+        secondDivider.snp.makeConstraints { make in
+            make.top.equalTo(customStackView.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(1)
+        }
         
         // Add buttons.
         if style.sendButtonVisibility != .none {
@@ -281,14 +299,10 @@ public extension ComposerView {
             }
         }
         
-        customStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(4)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().offset(-10)
-        }
+
         
         imagesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(customStackView.snp.bottom)
+            make.top.equalToSuperview().offset(4)
             make.left.right.equalToSuperview()
         }
         
@@ -297,17 +311,25 @@ public extension ComposerView {
             make.left.right.equalToSuperview()
         }
         
+        customStackView.snp.makeConstraints { make in
+            belowFileStackTopConstraint = make.top.equalTo(filesStackView.snp.bottom).offset(4).constraint
+            belowFileStackTopConstraint?.deactivate()
+            
+            belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).constraint
+            belowImageViewTopConstraint?.deactivate()
+            
+            defaultTopConstraint = make.top.equalToSuperview().offset(4).constraint
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+        }
+        
         messagesContainer.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            
-            belowFileStackTopConstraint = make.top.equalTo(filesStackView.snp.bottom).offset(10).constraint
-            belowFileStackTopConstraint?.deactivate()
-            
-            belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).offset(10).constraint
+
             belowImageViewTopConstraint?.deactivate()
             
-            defaultTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(4).constraint
+            make.top.equalTo(customStackView.snp.bottom).offset(4)
             
             make.bottom.equalToSuperview().offset(-10)
         }
