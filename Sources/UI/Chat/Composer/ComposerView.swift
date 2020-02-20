@@ -62,10 +62,10 @@ public final class ComposerView: UIView {
     
     /// An images collection view.
     public private(set) lazy var imagesCollectionView = setupImagesCollectionView()
+    public private(set) lazy var filesCollectionView = setupFilesCollectionView()
     var imageUploaderItems: [UploaderItem] = []
-    /// A files stack view.
-    public private(set) lazy var filesStackView = setupFilesStackView()
-    
+    var fileUploaderItems: [UploaderItem] = []
+
     /// Uploader for images and files.
     public var uploader: Uploader?
     
@@ -227,6 +227,9 @@ public final class ComposerView: UIView {
             // attachmentButton.isEnabled = isEnabled
             imagesCollectionView.isUserInteractionEnabled = isEnabled
             imagesCollectionView.alpha = isEnabled ? 1 : 0.5
+            filesCollectionView.isUserInteractionEnabled = isEnabled
+            filesCollectionView.alpha = isEnabled ? 1 : 0.5
+            
             styleState = isEnabled ? .normal : .disabled
         }
     }
@@ -246,17 +249,11 @@ public extension ComposerView {
         }
         
         // Add to superview.
-        
         view.addSubview(self)
-        
-        
-
-        
         snp.makeConstraints { make in
             make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
             make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
-            //heightConstraint = make.height.equalTo(style.height).constraint
         }
         
         // Apply style.
@@ -266,12 +263,9 @@ public extension ComposerView {
         addSubview(secondDivider)
         addSubview(customStackView)
         addSubview(messagesContainer)
-        // Images Collection View.
         addSubview(imagesCollectionView)
-        // Files Stack View.
-        addSubview(filesStackView)
-        
-        
+        addSubview(filesCollectionView)
+
         firstDivider.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
@@ -299,20 +293,19 @@ public extension ComposerView {
             }
         }
         
-
-        
         imagesCollectionView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(4)
             make.left.right.equalToSuperview()
         }
         
-        filesStackView.snp.makeConstraints { make in
-            make.top.equalTo(imagesCollectionView.snp.bottom)
+        
+        filesCollectionView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(4)
             make.left.right.equalToSuperview()
         }
         
         customStackView.snp.makeConstraints { make in
-            belowFileStackTopConstraint = make.top.equalTo(filesStackView.snp.bottom).offset(4).constraint
+            belowFileStackTopConstraint = make.top.equalTo(filesCollectionView.snp.bottom).offset(4).constraint
             belowFileStackTopConstraint?.deactivate()
             
             belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).constraint
@@ -368,9 +361,9 @@ public extension ComposerView {
         uploader?.reset()
         imageUploaderItems = []
         updatePlaceholder()
-        filesStackView.isHidden = true
-        filesStackView.removeAllArrangedSubviews()
+        filesCollectionView.isHidden = true
         updateImagesCollectionView()
+        updateFilesCollectionView()
         styleState = textView.isFirstResponder ? .active : .normal
     }
     
