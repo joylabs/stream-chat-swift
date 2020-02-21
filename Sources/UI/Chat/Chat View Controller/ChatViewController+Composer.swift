@@ -473,10 +473,12 @@ extension ChatViewController {
             }
             
             if let pickedImage = pickedImage, let uploaderItem = UploaderItem(channel: channel, pickedImage: pickedImage) {
-                if self?.validateFileSize(uploaderItem) ?? true {
-                  self?.composerView.addImageUploaderItem(uploaderItem)
-                } else {
-                    self?.showAlertError("This file is more than 25mb, please upload a smaller file.")
+                
+                do {
+                    try self?.validateFile(uploaderItem)
+                    self?.composerView.addImageUploaderItem(uploaderItem)
+                } catch {
+                    self?.showAlertError(error.localizedDescription)
                 }
             }
         }
@@ -499,11 +501,12 @@ extension ChatViewController {
                 if let self = self, let channel = self.channelPresenter?.channel {
                     $0.forEach { url in
                         let item = UploaderItem(channel: channel, url: url)
-                        if self.validateFileSize(item) {
+                        
+                        do {
+                            try self.validateFile(item)
                             return self.composerView.addFileUploaderItem(item)
-                        } else {
-                            self.showAlertError("This file is more than 25mb, please upload a smaller file.")
-                            return
+                        } catch {
+                            self.showAlertError(error.localizedDescription)
                         }
                         
                     }
@@ -513,18 +516,6 @@ extension ChatViewController {
         
         present(documentPickerViewController, animated: true)
         hideAddFileView()
-    }
-    
-    func validateFileSize(_ item: UploaderItem) -> Bool {
-        item.fileSize <= 26_214_400
-    }
-    
-    func showAlertError(_ message: String) {
-        let alert = UIAlertController(title: "Memo", message: message, preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-
-        self.present(alert, animated: true)
     }
 }
 
@@ -540,5 +531,73 @@ extension ChatViewController {
         }
         
         channelPresenter?.dispatch(action: action, message: message).subscribe().disposed(by: disposeBag)
+    }
+}
+// MARK:- Memo Custom
+
+enum AttachmentError: Error {
+    case size
+    case maxNumberOfItems
+    case extensionNotAllowed
+}
+
+extension AttachmentError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+            case .size:
+                return NSLocalizedString(
+                    "This file is more than 25mb, please upload a smaller file.",
+                    comment: ""
+                )
+            case .maxNumberOfItems:
+                return NSLocalizedString(
+                    "Sorry, only one file per message.",
+                    comment: ""
+                )
+            case .extensionNotAllowed:
+                return NSLocalizedString(
+                    "This type of file is not allowed.",
+                    comment: ""
+                )
+                
+        }
+    }
+}
+
+extension ChatViewController {
+    
+    func validateFile(_ item: UploaderItem) throws {
+        guard item.fileSize <= 26_214_400 else { //25MB
+            throw AttachmentError.size
+        }
+        
+        let execExtensions = ["action", "apk", "app", "bat", "bin", "cmd", "com", "command", "cpl", "csh", "exe",
+        "gadget", "inf1", "ins", "inx", "ipa", "isu", "job", "jse", "ksh", "lnk", "msc", "msi",
+        "msp", "mst", "osx", "out", "paf", "pif", "prg", "ps1", "reg", "rgs", "run", "scr",
+        "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "workflow", "ws", "wsf",
+        "wsh", "0xe", "73k", "89k", "a6p", "ac", "acc", "acr", "actm", "ahk", "air", "app",
+        "arscript", "as", "asb", "awk", "azw2", "beam", "btm", "cel", "celx", "chm", "cof",
+        "crt", "dek", "dld", "dmc", "docm", "dotm", "dxl", "ear", "ebm", "ebs", "ebs2", "ecf",
+        "eham", "elf", "es", "ex4", "exopc", "ezs", "fas", "fky", "fpi", "frs", "fxp", "gs",
+        "ham", "hms", "hpf", "hta", "iim", "ipf", "isp", "jar", "js", "jsx", "kix", "lo", "ls",
+        "mam", "mcr", "mel", "mpx", "mrc", "ms", "ms", "mxe", "nexe", "obs", "ore", "otm", "pex",
+        "plx", "potm", "ppam", "ppsm", "pptm", "prc", "pvd", "pwc", "pyc", "pyo", "qpx", "rbx",
+        "rox", "rpj", "s2a", "sbs", "sca", "scar", "scb", "script", "smm", "spr", "tcp", "thm",
+        "tlb", "tms", "udf", "upx", "url", "vlx", "vpm", "wcm", "widget", "wiz", "wpk", "wpm",
+        "xap", "xbap", "xlam", "xlm", "xlsm", "xltm", "xqt", "xys", "zl9"]
+        
+        if let fileExtension = item.url?.pathExtension.lowercased() {
+            guard !execExtensions.contains(fileExtension) else {
+                throw AttachmentError.extensionNotAllowed
+            }
+        }
+    }
+    
+    func showAlertError(_ message: String) {
+        let alert = UIAlertController(title: "Memo", message: message, preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        self.present(alert, animated: true)
     }
 }
