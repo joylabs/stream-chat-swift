@@ -46,6 +46,16 @@ public struct Attachment: Codable {
     /// An extra data for the attachment.
     public let extraData: ExtraData?
     
+    public var fileNameFromURL: String {
+        var items: [String] = url?.lastPathComponent.split(separator: ".").map(String.init) ?? []
+        items.removeFirst()
+        return items.joined(separator: ".")
+    }
+    
+    public var fileExtension: String {
+        var extensions: [String] = fileNameFromURL.split(separator: ".").map(String.init) 
+        return extensions.removeLast()
+    }
     /// Check if the attachment is an image.
     public var isImage: Bool {
         return type.isImage && text == nil
