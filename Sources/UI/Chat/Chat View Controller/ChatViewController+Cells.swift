@@ -101,7 +101,11 @@ extension ChatViewController {
                 cell.addAttachment(attachment,
                                    at: index,
                                    from: message,
-                                   tap: { [weak self] in self?.show(attachment: $0, at: $1, from: $2) },
+                                   tap: {[weak self] _,_,_  in //self?.show(attachment: $0, at: $1, from: $2)
+                                    self?.didTapEmailAttachment?(attachment, self)
+                                    
+                                    
+                    },
                                    actionTap: { [weak self] in self?.sendActionForEphemeral(message: $0, button: $1) },
                                    reload: { [weak self] in
                                     if let self = self {

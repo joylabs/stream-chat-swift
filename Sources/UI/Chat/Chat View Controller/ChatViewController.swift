@@ -12,9 +12,18 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+/// This class describes the different types of custom messages we can display
+public enum CustomMessageType {
+    case conversationBeginning
+    case embeddedEmail
+    case undefined
+}
 /// A chat view controller of a channel.
 open class ChatViewController: ViewController, UITableViewDataSource, UITableViewDelegate {
     
+    /// Custom tap handlers for accessing events on upper levels
+    public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?) -> Void)?
+    public var didTapEmailAttachment: ((_ attachment: Attachment, _ viewController: ChatViewController?) -> Void)?
     /// A chat style.
     public lazy var style = defaultStyle
     

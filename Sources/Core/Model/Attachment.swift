@@ -48,7 +48,9 @@ public struct Attachment: Codable {
     
     public var fileNameFromURL: String {
         var items: [String] = url?.lastPathComponent.split(separator: ".").map(String.init) ?? []
-        items.removeFirst()
+        if !items.isEmpty {
+            items.removeFirst()
+        }
         return items.joined(separator: ".")
     }
     
