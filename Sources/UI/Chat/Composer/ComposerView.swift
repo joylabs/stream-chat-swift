@@ -62,10 +62,10 @@ public final class ComposerView: UIView {
     
     /// An images collection view.
     public private(set) lazy var imagesCollectionView = setupImagesCollectionView()
+    public private(set) lazy var filesCollectionView = setupFilesCollectionView()
     var imageUploaderItems: [UploaderItem] = []
-    /// A files stack view.
-    public private(set) lazy var filesStackView = setupFilesStackView()
-    
+    var fileUploaderItems: [UploaderItem] = []
+
     /// Uploader for images and files.
     public var uploader: Uploader?
     
@@ -75,6 +75,20 @@ public final class ComposerView: UIView {
     public var belowFileStackTopConstraint: Constraint?
     public var belowImageViewTopConstraint: Constraint?
     public var defaultTopConstraint: Constraint?
+    
+    
+    public lazy var firstDivider: UIView = {
+        let firstDivider = UIView()
+        firstDivider.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        return firstDivider
+    }()
+    
+    public lazy var secondDivider: UIView = {
+        let secondDivider = UIView()
+        secondDivider.isHidden = true
+        secondDivider.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+        return secondDivider
+    }()
     
     public lazy var topicButton: UIButton = {
         let button = UIButton()
@@ -213,6 +227,9 @@ public final class ComposerView: UIView {
             // attachmentButton.isEnabled = isEnabled
             imagesCollectionView.isUserInteractionEnabled = isEnabled
             imagesCollectionView.alpha = isEnabled ? 1 : 0.5
+            filesCollectionView.isUserInteractionEnabled = isEnabled
+            filesCollectionView.alpha = isEnabled ? 1 : 0.5
+            
             styleState = isEnabled ? .normal : .disabled
         }
     }
@@ -232,39 +249,34 @@ public extension ComposerView {
         }
         
         // Add to superview.
-        
         view.addSubview(self)
-        
-        
-        let line = UIView()
-        line.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
-        
         snp.makeConstraints { make in
             make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
             make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
-            //heightConstraint = make.height.equalTo(style.height).constraint
         }
         
         // Apply style.
         backgroundColor = .white
         clipsToBounds = true
-        addSubview(line)
+        addSubview(firstDivider)
+        addSubview(secondDivider)
         addSubview(customStackView)
         addSubview(messagesContainer)
-        // Images Collection View.
         addSubview(imagesCollectionView)
-        // Files Stack View.
-        addSubview(filesStackView)
-        
-        
-        line.snp.makeConstraints { make in
+        addSubview(filesCollectionView)
+
+        firstDivider.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
-
         
+        secondDivider.snp.makeConstraints { make in
+            make.top.equalTo(customStackView.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(1)
+        }
         
         // Add buttons.
         if style.sendButtonVisibility != .none {
@@ -281,33 +293,36 @@ public extension ComposerView {
             }
         }
         
-        customStackView.snp.makeConstraints { make in
+        imagesCollectionView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(4)
+            make.left.right.equalToSuperview()
+        }
+        
+        
+        filesCollectionView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(4)
+            make.left.right.equalToSuperview()
+        }
+        
+        customStackView.snp.makeConstraints { make in
+            belowFileStackTopConstraint = make.top.equalTo(filesCollectionView.snp.bottom).offset(4).constraint
+            belowFileStackTopConstraint?.deactivate()
+            
+            belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).constraint
+            belowImageViewTopConstraint?.deactivate()
+            
+            defaultTopConstraint = make.top.equalToSuperview().offset(4).constraint
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-        }
-        
-        imagesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(customStackView.snp.bottom)
-            make.left.right.equalToSuperview()
-        }
-        
-        filesStackView.snp.makeConstraints { make in
-            make.top.equalTo(imagesCollectionView.snp.bottom)
-            make.left.right.equalToSuperview()
         }
         
         messagesContainer.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            
-            belowFileStackTopConstraint = make.top.equalTo(filesStackView.snp.bottom).offset(10).constraint
-            belowFileStackTopConstraint?.deactivate()
-            
-            belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).offset(10).constraint
+
             belowImageViewTopConstraint?.deactivate()
             
-            defaultTopConstraint = make.top.equalTo(customStackView.snp.bottom).offset(4).constraint
+            make.top.equalTo(customStackView.snp.bottom).offset(4)
             
             make.bottom.equalToSuperview().offset(-10)
         }
@@ -346,9 +361,9 @@ public extension ComposerView {
         uploader?.reset()
         imageUploaderItems = []
         updatePlaceholder()
-        filesStackView.isHidden = true
-        filesStackView.removeAllArrangedSubviews()
+        filesCollectionView.isHidden = true
         updateImagesCollectionView()
+        updateFilesCollectionView()
         styleState = textView.isFirstResponder ? .active : .normal
     }
     

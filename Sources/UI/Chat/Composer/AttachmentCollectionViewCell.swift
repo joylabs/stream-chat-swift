@@ -49,7 +49,7 @@ public final class AttachmentCollectionViewCell: UICollectionViewCell, Reusable 
     
     private func setup() {
         let cornerRadius = removeButton.layer.cornerRadius
-        layer.cornerRadius = cornerRadius
+        layer.cornerRadius = 6
         clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         imageView.makeEdgesEqualToSuperview(superview: contentView)
@@ -115,8 +115,8 @@ public final class AttachmentCollectionViewCell: UICollectionViewCell, Reusable 
     
     func updateRemoveButton(tintColor: UIColor?, action: @escaping () -> Void) {
         if let tintColor = tintColor {
-            removeButton.tintColor = tintColor
-            removeButton.backgroundColor = tintColor.oppositeBlackAndWhite.withAlphaComponent(0.4)
+            removeButton.tintColor = .white
+            removeButton.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         }
         
         removeButton.rx.tap.subscribe(onNext: action).disposed(by: disposeBag)
