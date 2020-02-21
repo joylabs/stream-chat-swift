@@ -10,6 +10,8 @@
 		465D64C2231808A2006BAE42 /* AttachmentTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465D64C1231808A2006BAE42 /* AttachmentTypeTests.swift */; };
 		77A66F1E23F1B153003BE765 /* RxGesture.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDD022E9BB0C005CFAC9 /* RxGesture.framework */; };
 		77A66F2023F1B163003BE765 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AD5EDC422E9BAC5005CFAC9 /* RxCocoa.framework */; };
+		77B4C4D423FF1C8E009862F7 /* FileAttachmentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4C4D223FF1A2A009862F7 /* FileAttachmentCollectionViewCell.swift */; };
+		77B4C4D723FF4AF0009862F7 /* GrowingTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77B4C4D523FF4AC4009862F7 /* GrowingTextView.swift */; };
 		798D413C23ACC89500F39EF8 /* ClientLoggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798D413B23ACC89400F39EF8 /* ClientLoggerTests.swift */; };
 		8A048E4A2331252400FDB3C0 /* Channel+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A048E492331252400FDB3C0 /* Channel+Database.swift */; };
 		8A048E4C2332247900FDB3C0 /* ChannelPresenter+Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A048E4B2332247900FDB3C0 /* ChannelPresenter+Request.swift */; };
@@ -258,6 +260,8 @@
 
 /* Begin PBXFileReference section */
 		465D64C1231808A2006BAE42 /* AttachmentTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentTypeTests.swift; sourceTree = "<group>"; };
+		77B4C4D223FF1A2A009862F7 /* FileAttachmentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAttachmentCollectionViewCell.swift; sourceTree = "<group>"; };
+		77B4C4D523FF4AC4009862F7 /* GrowingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowingTextView.swift; sourceTree = "<group>"; };
 		798D413B23ACC89400F39EF8 /* ClientLoggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientLoggerTests.swift; sourceTree = "<group>"; };
 		8A048E492331252400FDB3C0 /* Channel+Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Channel+Database.swift"; sourceTree = "<group>"; };
 		8A048E4B2332247900FDB3C0 /* ChannelPresenter+Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChannelPresenter+Request.swift"; sourceTree = "<group>"; };
@@ -878,6 +882,7 @@
 				8AD5ECE422E9BA39005CFAC9 /* ComposerAddFileView.swift */,
 				8AD5ECE922E9BA39005CFAC9 /* ComposerFileView.swift */,
 				8AD5ECE622E9BA39005CFAC9 /* AttachmentCollectionViewCell.swift */,
+				77B4C4D223FF1A2A009862F7 /* FileAttachmentCollectionViewCell.swift */,
 				8AD5ECE822E9BA39005CFAC9 /* UploaderItem+UIImagePickerController.swift */,
 			);
 			path = Composer;
@@ -976,6 +981,7 @@
 				8AD5ED1B22E9BA39005CFAC9 /* Data+Extensions.swift */,
 				8AD5ECCE22E9BA39005CFAC9 /* Date+Extensions.swift */,
 				8AD0A99123141D2400B8EB97 /* Tests.swift */,
+				77B4C4D523FF4AC4009862F7 /* GrowingTextView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1348,6 +1354,7 @@
 				8AD5ED9422E9BA98005CFAC9 /* MediaGalleryViewController.swift in Sources */,
 				8AD5EDA322E9BA98005CFAC9 /* UIEdgeInsets+Extensions.swift in Sources */,
 				8A2BE6092334E0ED00D6E684 /* EscapeBridgingUI.swift in Sources */,
+				77B4C4D723FF4AF0009862F7 /* GrowingTextView.swift in Sources */,
 				8AD5ED7A22E9BA98005CFAC9 /* ChatFooterView.swift in Sources */,
 				8AD5ED7822E9BA98005CFAC9 /* MessageTableViewCell+Updates.swift in Sources */,
 				8AD5ED8322E9BA98005CFAC9 /* ComposerView.swift in Sources */,
@@ -1357,6 +1364,7 @@
 				8AD5ED7422E9BA98005CFAC9 /* StatusTableViewCell.swift in Sources */,
 				8AD5EDA222E9BA98005CFAC9 /* UIView+Extensions.swift in Sources */,
 				8AD5EDA122E9BA98005CFAC9 /* IndexPath+Extensions.swift in Sources */,
+				77B4C4D423FF1C8E009862F7 /* FileAttachmentCollectionViewCell.swift in Sources */,
 				8AD5ED7D22E9BA98005CFAC9 /* ComposerAddFileView.swift in Sources */,
 				8AD5EDA722E9BA98005CFAC9 /* UIColor+Extensions.swift in Sources */,
 				8AD5ED7922E9BA98005CFAC9 /* MessageTableViewCell.swift in Sources */,
@@ -1557,7 +1565,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1589,6 +1597,7 @@
 				);
 				INFOPLIST_FILE = StreamChatCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1672,7 +1681,7 @@
 				);
 				INFOPLIST_FILE = StreamChatRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1740,7 +1749,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1772,6 +1781,7 @@
 				);
 				INFOPLIST_FILE = StreamChatCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1855,7 +1865,7 @@
 				);
 				INFOPLIST_FILE = StreamChatRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1923,7 +1933,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1955,6 +1965,7 @@
 				);
 				INFOPLIST_FILE = StreamChatCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2038,7 +2049,7 @@
 				);
 				INFOPLIST_FILE = StreamChatRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2112,7 +2123,7 @@
 				);
 				INFOPLIST_FILE = StreamChatRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2144,7 +2155,7 @@
 				);
 				INFOPLIST_FILE = StreamChatRealm/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2212,7 +2223,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2271,7 +2282,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2367,6 +2378,7 @@
 				);
 				INFOPLIST_FILE = StreamChatCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2400,6 +2412,7 @@
 				);
 				INFOPLIST_FILE = StreamChatCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

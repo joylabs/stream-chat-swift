@@ -15,11 +15,17 @@ final class ComposerFileView: UIView {
     
     let disposeBag = DisposeBag()
     
-    let iconView = UIImageView(image: UIImage.FileTypes.zip)
+    let iconView : UIImageView = {
+        let imageView = UIImageView(image: UIImage.FileTypes.zip)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
     
     lazy var fileNameLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = .chatMediumBold
+        label.font = UIFont(name: "Lato-Bold", size: 14)
+        label.textColor = UIColor(red: 49/255, green: 21/255, blue: 233/255, alpha: 1)
+
         return label
     }()
     
@@ -39,7 +45,9 @@ final class ComposerFileView: UIView {
     
     let removeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.setImage(UIImage.Icons.close, for: .normal)
+        button.setImage(UIImage(systemName: "minus"), for: .normal)
+        button.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        button.tintColor = .white
         button.layer.cornerRadius = UIImage.Icons.close.size.width / 2
         return button
     }()
@@ -51,11 +59,10 @@ final class ComposerFileView: UIView {
         
         addSubview(iconView)
         addSubview(fileNameLabel)
-        addSubview(fileSizeLabel)
+        
         addSubview(removeButton)
         addSubview(progressView)
         progressView.progress = 0.3
-        
         iconView.snp.makeConstraints { make in
             make.left.top.equalToSuperview().offset(CGFloat.composerFilePadding)
             make.bottom.equalToSuperview().offset(-CGFloat.composerFilePadding)
@@ -64,26 +71,22 @@ final class ComposerFileView: UIView {
         }
         
         fileNameLabel.snp.makeConstraints { make in
-            make.bottom.equalTo(iconView.snp.centerY).offset(1)
+            make.centerY.equalTo(iconView.snp.centerY).offset(1)
             make.left.equalTo(iconView.snp.right).offset(CGFloat.composerFilePadding)
             make.right.equalTo(removeButton.snp.left).offset(-CGFloat.composerFilePadding)
+            make.width.lessThanOrEqualTo(200)
         }
-        
-        fileSizeLabel.snp.makeConstraints { make in
-            make.top.equalTo(iconView.snp.centerY).offset(1)
-            make.left.equalTo(iconView.snp.right).offset(CGFloat.composerFilePadding)
-            make.right.equalTo(removeButton.snp.left).offset(-CGFloat.composerFilePadding)
-        }
-        
+    
         removeButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-CGFloat.composerFilePadding)
             make.centerY.equalTo(fileNameLabel.snp.centerY)
+            make.width.height.equalTo(20)
         }
         
         removeButton.setContentHuggingPriority(.required, for: .horizontal)
         
         progressView.snp.makeConstraints { make in
-            make.top.equalTo(fileSizeLabel.snp.centerY)
+            make.top.equalTo(fileNameLabel.snp.bottom)
             make.left.equalTo(iconView.snp.right).offset(CGFloat.composerFilePadding)
             make.right.equalTo(removeButton.snp.left).offset(-CGFloat.composerFilePadding)
         }
@@ -95,8 +98,8 @@ final class ComposerFileView: UIView {
     
     func updateRemoveButton(tintColor: UIColor?, action: @escaping () -> Void) {
         if let tintColor = tintColor {
-            removeButton.tintColor = tintColor
-            removeButton.backgroundColor = tintColor.oppositeBlackAndWhite.withAlphaComponent(0.5)
+            removeButton.tintColor = .white
+            removeButton.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         }
         
         removeButton.rx.tap.subscribe(onNext: action).disposed(by: disposeBag)
