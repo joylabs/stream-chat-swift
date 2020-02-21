@@ -113,7 +113,9 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
         } else {
             sizeLabel.textAlignment = .left
             iconImageView.snp.makeConstraints { make in
-                make.left.equalToSuperview().offset(CGFloat.messageInnerPadding)
+            make.left.equalToSuperview().offset(CGFloat.messageInnerPadding)
+                make.width.equalTo(30)
+                make.height.equalTo(30)
                 make.top.equalToSuperview().offset(20)
             }
             
