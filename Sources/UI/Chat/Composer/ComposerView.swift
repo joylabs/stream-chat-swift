@@ -63,8 +63,8 @@ public final class ComposerView: UIView {
     /// An images collection view.
     public private(set) lazy var imagesCollectionView = setupImagesCollectionView()
     public private(set) lazy var filesCollectionView = setupFilesCollectionView()
-    var imageUploaderItems: [UploaderItem] = []
-    var fileUploaderItems: [UploaderItem] = []
+    public var imageUploaderItems: [UploaderItem] = []
+    public var fileUploaderItems: [UploaderItem] = []
 
     /// Uploader for images and files.
     public var uploader: Uploader?
