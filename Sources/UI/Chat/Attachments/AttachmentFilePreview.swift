@@ -73,9 +73,9 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
     
     
     func updateAttachmentLayout(_ message: Message) {
-        sizeLabel.font = UIFont(name: "Lato-Regular", size: 11)
+        sizeLabel.font = Fonts.regular.of(size: 11)
         iconImageView.contentMode = .scaleAspectFit
-        titleLabel.font = UIFont(name: "Lato-Bold", size: 14)
+        titleLabel.font = Fonts.bold.of(size: 14)
         backgroundColor = UIColor(displayP3Red: 239/255, green: 237/255, blue: 255/255, alpha: 1)
         
         // Remove constraints

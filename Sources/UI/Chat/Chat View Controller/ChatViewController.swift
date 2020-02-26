@@ -89,7 +89,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         stackView.spacing = 5
         let label = UILabel()
         label.text = "About this conversation"
-        label.font = UIFont(name: "Lato-Regular", size: 12)
+        label.font = Fonts.regular.of(size: 12)
         label.textAlignment = .right
         label.textColor = UIColor(red: 49/255, green:  54/255, blue: 58/255, alpha: 0.4)
         label.backgroundColor = .white

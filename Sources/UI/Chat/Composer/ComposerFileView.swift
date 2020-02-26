@@ -23,7 +23,7 @@ final class ComposerFileView: UIView {
     
     lazy var fileNameLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = UIFont(name: "Lato-Bold", size: 14)
+        label.font = Fonts.bold.of(size: 14)
         label.textColor = UIColor(red: 49/255, green: 21/255, blue: 233/255, alpha: 1)
 
         return label

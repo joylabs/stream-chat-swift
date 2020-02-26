@@ -96,7 +96,7 @@ public final class ComposerView: UIView {
         button.backgroundColor = UIColor(displayP3Red: 226/255, green: 246/255, blue: 253/255, alpha: 1)
         button.setTitleColor(UIColor(displayP3Red: 0, green: 155/255, blue: 234/255, alpha: 1), for: .normal)
         button.setTitle("TOPIC", for: .normal)
-        button.titleLabel?.font = UIFont(name: "Lato-Bold", size: 12)
+        button.titleLabel?.font = Fonts.bold.of(size: 12)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
         button.setImage(UIImage.Icons.topic, for: .normal)
