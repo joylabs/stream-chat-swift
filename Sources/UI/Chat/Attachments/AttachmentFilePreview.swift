@@ -87,6 +87,7 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
         
         if !message.text.isEmpty {
             sizeLabel.textAlignment = .center
+            titleLabel.textAlignment = .left
             snp.makeConstraints { make in
                 make.width.equalTo(200)
             }
@@ -98,6 +99,7 @@ final class AttachmentFilePreview: UIImageView, AttachmentPreviewProtocol {
                 make.height.equalTo(50)
             }
             
+            titleLabel.textAlignment = .center
             titleLabel.snp.makeConstraints { make in
                 make.top.equalTo(iconImageView.snp.bottom).offset(5)
                 make.leading.equalToSuperview().offset(CGFloat.messageInnerPadding)
