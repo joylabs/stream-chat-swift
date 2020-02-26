@@ -106,14 +106,12 @@ public final class ComposerView: UIView {
     
     public lazy var attachImageButton: UIButton = {
         let button = UIButton()
-        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
         button.setImage(UIImage.Icons.attachImage, for: .normal)
         return button
     }()
     
     public lazy var attachDocumentButton: UIButton = {
         let button = UIButton()
-        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
         button.setImage(UIImage.Icons.attachDocument, for: .normal)
         return button
     }()
@@ -260,11 +258,11 @@ public extension ComposerView {
         backgroundColor = .white
         clipsToBounds = true
         addSubview(firstDivider)
+        addSubview(imagesCollectionView)
+        addSubview(filesCollectionView)
         addSubview(secondDivider)
         addSubview(customStackView)
         addSubview(messagesContainer)
-        addSubview(imagesCollectionView)
-        addSubview(filesCollectionView)
 
         firstDivider.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -304,6 +302,8 @@ public extension ComposerView {
             make.left.right.equalToSuperview()
         }
         
+        
+        customStackView.setContentCompressionResistancePriority(.required, for: .vertical)
         customStackView.snp.makeConstraints { make in
             belowFileStackTopConstraint = make.top.equalTo(filesCollectionView.snp.bottom).offset(4).constraint
             belowFileStackTopConstraint?.deactivate()
@@ -311,19 +311,26 @@ public extension ComposerView {
             belowImageViewTopConstraint = make.top.equalTo(imagesCollectionView.snp.bottom).constraint
             belowImageViewTopConstraint?.deactivate()
             
+            
             defaultTopConstraint = make.top.equalToSuperview().offset(4).constraint
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
         }
         
+        attachDocumentButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
+            make.width.equalTo(50)
+        }
+        
+        attachImageButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
+            make.width.equalTo(50)
+        }
+        messagesContainer.setContentCompressionResistancePriority(.required, for: .vertical)
         messagesContainer.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-
-            belowImageViewTopConstraint?.deactivate()
-            
             make.top.equalTo(customStackView.snp.bottom).offset(4)
-            
             make.bottom.equalToSuperview().offset(-10)
         }
                 
@@ -333,7 +340,7 @@ public extension ComposerView {
         textView.backgroundColor = backgroundColor
         
         textView.snp.makeConstraints { make in
-            textViewTopConstraint = make.top.equalToSuperview().offset(5).priority(990).constraint
+            make.top.equalToSuperview().offset(5)
             make.bottom.equalToSuperview().offset(-5)
             if sendButton.superview == nil {
                 make.right.equalToSuperview().offset(-textViewPadding)
