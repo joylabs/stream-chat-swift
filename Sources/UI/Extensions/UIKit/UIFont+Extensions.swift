@@ -8,6 +8,18 @@
 
 import UIKit.UIFont
 
+enum Fonts: String {
+    case regular = "Lato-Regular"
+    case bold = "Lato-Bold"
+    case black = "Lato-Black"
+    
+    /// This method returns a UIFont with the specified size
+    func of(size: CGFloat) -> UIFont {
+        return UIFont(name: self.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+    }
+}
+
+
 extension UIFont {
     /// A chat regular font.
     public static let chatRegular = UIFont.systemFont(ofSize: 15)
