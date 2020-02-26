@@ -454,8 +454,8 @@ extension ChatViewController {
     }
     
     private func showImagePicker(composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType) {
-        if composerView.imageUploaderItems.count > 0 {
-            self.showAlertError("You can only upload one image at this time.")
+        if composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0 {
+            self.showAlertError("Sorry, only one file per message.")
             return
         }
         guard case .photo(let pickerSourceType) = sourceType else {
@@ -487,8 +487,8 @@ extension ChatViewController {
     }
     
     private func showDocumentPicker() {
-        if composerView.uploader?.items.count ?? 0 > 0 {
-            self.showAlertError("You can only upload one document at this time.")
+        if  composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0{
+            self.showAlertError("Sorry, only one file per message.")
             return
         }
         
