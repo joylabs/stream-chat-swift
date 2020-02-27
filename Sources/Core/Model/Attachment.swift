@@ -55,8 +55,11 @@ public struct Attachment: Codable {
     }
     
     public var fileExtension: String {
-        var extensions: [String] = fileNameFromURL.split(separator: ".").map(String.init) 
-        return extensions.removeLast()
+        var extensions: [String] = fileNameFromURL.split(separator: ".").map(String.init)
+        if !extensions.isEmpty {
+            return extensions.removeLast()
+        }
+        return ""
     }
     /// Check if the attachment is an image.
     public var isImage: Bool {
