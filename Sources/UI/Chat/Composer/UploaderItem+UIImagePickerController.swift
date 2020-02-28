@@ -39,7 +39,7 @@ extension UploaderItem {
     }
 }
 
-struct PickedImage {
+public struct PickedImage {
     let image: UIImage?
     let fileURL: URL?
     let fileName: String

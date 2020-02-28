@@ -8,13 +8,85 @@
 
 import UIKit
 import Photos.PHPhotoLibrary
+import RxSwift
+import StreamChatCore
 
-extension UIViewController {
-    typealias ImagePickerCompletion = (_ imagePickedInfo: PickedImage?, _ authorizationStatus: PHAuthorizationStatus) -> Void
+public class StreamPickersController {
     
-    func showImagePicker(sourceType: UIImagePickerController.SourceType, _ completion: @escaping ImagePickerCompletion) {
+    
+    public static func presentImagePicker(vc: UIViewController,
+                                          composerView: ComposerView,
+                                          channel: Channel?,
+                                          composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType,
+                                          disposeBag: DisposeBag) {
+        
+        if composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0 {
+            vc.showAlertError("Sorry, only one file per message.")
+            return
+        }
+        guard case .photo(let pickerSourceType) = sourceType else {
+            return
+        }
+        
+        
+        self.showImagePicker(vc: vc, sourceType: pickerSourceType) { pickedImage, status in
+            guard status == .authorized else {
+                self.showImpagePickerAuthorizationStatusAlert(vc: vc, status)
+                return
+            }
+            
+            guard let channel = channel else {
+                return
+            }
+            
+            if let pickedImage = pickedImage, let uploaderItem = UploaderItem(channel: channel, pickedImage: pickedImage) {
+                do {
+                    try self.validateFile(uploaderItem)
+                    composerView.addImageUploaderItem(uploaderItem)
+                } catch {
+                    vc.showAlertError(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    public static func showDocument(vc: UIViewController, composerView: ComposerView, channel: Channel?, disposeBag: DisposeBag) {
+        if  composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0{
+            vc.showAlertError("Sorry, only one file per message.")
+            return
+        }
+        
+        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [.anyFileType], in: .import)
+        documentPickerViewController.allowsMultipleSelection = true
+        
+        documentPickerViewController.rx.didPickDocumentsAt
+            .takeUntil(documentPickerViewController.rx.deallocated)
+            .subscribe(onNext: { items in
+                if let channel = channel {
+                    items.forEach { url in
+                        let item = UploaderItem(channel: channel, url: url)
+                        
+                        do {
+                            try self.validateFile(item)
+                            return composerView.addFileUploaderItem(item)
+                        } catch {
+                            vc.showAlertError(error.localizedDescription)
+                        }
+                    }
+                }
+            })
+            .disposed(by: disposeBag)
+        vc.present(documentPickerViewController, animated: true)
+    }
+    
+    
+    public static func showImagePicker(vc: UIViewController,
+                                       sourceType: UIImagePickerController.SourceType,
+                                       _ completion: @escaping (_ imagePickedInfo: PickedImage?, _ authorizationStatus: PHAuthorizationStatus) -> Void) {
+        
+        
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-            showAuthorizeImagePicker(sourceType: sourceType, completion)
+            showAuthorizeImagePicker(vc: vc, sourceType: sourceType, completion)
             return
         }
         
@@ -22,10 +94,10 @@ extension UIViewController {
         
         switch status {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization { [weak self] status in
+            PHPhotoLibrary.requestAuthorization { status in
                 DispatchQueue.main.async {
                     if status == .authorized {
-                        self?.showAuthorizeImagePicker(sourceType: sourceType, completion)
+                        showAuthorizeImagePicker(vc: vc, sourceType: sourceType, completion)
                     } else {
                         completion(nil, status)
                     }
@@ -34,14 +106,17 @@ extension UIViewController {
         case .restricted, .denied:
             completion(nil, status)
         case .authorized:
-            showAuthorizeImagePicker(sourceType: sourceType, completion)
+            showAuthorizeImagePicker(vc: vc, sourceType: sourceType, completion)
         @unknown default:
             print(#file, #function, #line, "Unknown authorization status: \(status.rawValue)")
             return
         }
     }
     
-    private func showAuthorizeImagePicker(sourceType: UIImagePickerController.SourceType, _ completion: @escaping ImagePickerCompletion) {
+    private static func showAuthorizeImagePicker(vc: UIViewController,
+                                                 sourceType: UIImagePickerController.SourceType,
+                                                 _ completion: @escaping (_ imagePickedInfo: PickedImage?, _ authorizationStatus: PHAuthorizationStatus) -> Void) {
+        
         let delegateKey = String(ObjectIdentifier(self).hashValue) + "ImagePickerDelegate"
         let imagePickerViewController = UIImagePickerController()
         imagePickerViewController.sourceType = sourceType
@@ -67,10 +142,10 @@ extension UIViewController {
         }
         
         objc_setAssociatedObject(self, delegateKey, delegate, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        present(imagePickerViewController, animated: true)
+        vc.present(imagePickerViewController, animated: true)
     }
     
-    func showImpagePickerAuthorizationStatusAlert(_ status: PHAuthorizationStatus) {
+    public static func showImpagePickerAuthorizationStatusAlert(vc: UIViewController, _ status: PHAuthorizationStatus) {
         var message = ""
         
         switch status {
@@ -86,7 +161,36 @@ extension UIViewController {
         
         let alert = UIAlertController(title: "The Photo Library Permissions", message: message, preferredStyle: .alert)
         alert.addAction(.init(title: "Ok", style: .default, handler: nil))
-        present(alert, animated: true)
+        vc.present(alert, animated: true)
+    }
+    
+    
+    
+    private static func validateFile(_ item: UploaderItem) throws {
+        guard item.fileSize <= 26_214_400 else { //25MB
+            throw AttachmentError.size
+        }
+        
+        let execExtensions = ["action", "apk", "app", "bat", "bin", "cmd", "com", "command", "cpl", "csh", "exe",
+                              "gadget", "inf1", "ins", "inx", "ipa", "isu", "job", "jse", "ksh", "lnk", "msc", "msi",
+                              "msp", "mst", "osx", "out", "paf", "pif", "prg", "ps1", "reg", "rgs", "run", "scr",
+                              "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "workflow", "ws", "wsf",
+                              "wsh", "0xe", "73k", "89k", "a6p", "ac", "acc", "acr", "actm", "ahk", "air", "app",
+                              "arscript", "as", "asb", "awk", "azw2", "beam", "btm", "cel", "celx", "chm", "cof",
+                              "crt", "dek", "dld", "dmc", "docm", "dotm", "dxl", "ear", "ebm", "ebs", "ebs2", "ecf",
+                              "eham", "elf", "es", "ex4", "exopc", "ezs", "fas", "fky", "fpi", "frs", "fxp", "gs",
+                              "ham", "hms", "hpf", "hta", "iim", "ipf", "isp", "jar", "js", "jsx", "kix", "lo", "ls",
+                              "mam", "mcr", "mel", "mpx", "mrc", "ms", "ms", "mxe", "nexe", "obs", "ore", "otm", "pex",
+                              "plx", "potm", "ppam", "ppsm", "pptm", "prc", "pvd", "pwc", "pyc", "pyo", "qpx", "rbx",
+                              "rox", "rpj", "s2a", "sbs", "sca", "scar", "scb", "script", "smm", "spr", "tcp", "thm",
+                              "tlb", "tms", "udf", "upx", "url", "vlx", "vpm", "wcm", "widget", "wiz", "wpk", "wpm",
+                              "xap", "xbap", "xlam", "xlm", "xlsm", "xltm", "xqt", "xys", "zl9"]
+        
+        if let fileExtension = item.url?.pathExtension.lowercased() {
+            guard !execExtensions.contains(fileExtension) else {
+                throw AttachmentError.extensionNotAllowed
+            }
+        }
     }
 }
 
@@ -94,10 +198,10 @@ extension UIViewController {
 
 fileprivate final class ImagePickerDelegate: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     typealias Cancel = () -> Void
-    let completion: UIViewController.ImagePickerCompletion
+    let completion: (_ imagePickedInfo: PickedImage?, _ authorizationStatus: PHAuthorizationStatus) -> Void
     let cancellation: Cancel
     
-    init(_ completion: @escaping UIViewController.ImagePickerCompletion, cancellation: @escaping Cancel) {
+    init(_ completion: @escaping (_ imagePickedInfo: PickedImage?, _ authorizationStatus: PHAuthorizationStatus) -> Void, cancellation: @escaping Cancel) {
         self.completion = completion
         self.cancellation = cancellation
     }

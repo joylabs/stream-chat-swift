@@ -11,6 +11,7 @@ import StreamChatCore
 import SnapKit
 import RxSwift
 import RxCocoa
+import Photos
 
 /// This class describes the different types of custom messages we can display
 public enum CustomMessageType {
@@ -93,8 +94,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         label.textAlignment = .right
         label.textColor = UIColor(red: 49/255, green:  54/255, blue: 58/255, alpha: 0.4)
         label.backgroundColor = .white
-
-
+        
+        
         stackView.addArrangedSubview(label)
         if #available(iOS 13.0, *) {
             if let chevron = UIImage(systemName: "chevron.down")?.withRenderingMode(.alwaysTemplate) {
@@ -332,6 +333,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     private func markReadIfPossible() {
         channelPresenter?.markReadIfPossible().subscribe().disposed(by: disposeBag)
     }
+    
+
 }
 
 // MARK: - Title

@@ -112,7 +112,11 @@ extension ChatViewController {
             .disposed(by: disposeBag)
         
         composerView.attachImageButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.showImagePicker(composerAddFileViewSourceType: .photo(.savedPhotosAlbum)) })
+            .subscribe(onNext: { [weak self] in
+                guard let _self = self else { return }
+                self?.showImagePicker(composerAddFileViewSourceType: .photo(.savedPhotosAlbum))
+                
+            })
             .disposed(by: disposeBag)
         
         
@@ -357,10 +361,12 @@ extension ChatViewController {
                                            icon: UIImage.Icons.images,
                                            title: "Upload a photo or video",
                                            sourceType: .photo(.savedPhotosAlbum)) { [weak self] in
+                                            guard let _self = self else { return }
                                             self?.showImagePicker(composerAddFileViewSourceType: $0)
                     }
                     
                     composerView.imagesAddAction = { [weak self] _ in
+                        guard let _self = self else { return }
                         self?.showImagePicker(composerAddFileViewSourceType: .photo(.savedPhotosAlbum))
                     }
                 }
@@ -371,6 +377,7 @@ extension ChatViewController {
                                            icon: UIImage.Icons.camera,
                                            title: "Upload from a camera",
                                            sourceType: .photo(.camera)) { [weak self] in
+                                            guard let _self = self else { return }
                                             self?.showImagePicker(composerAddFileViewSourceType: $0)
                     }
                 }
@@ -379,7 +386,8 @@ extension ChatViewController {
                                        icon: UIImage.Icons.file,
                                        title: "Upload a file",
                                        sourceType: .file) { [weak self] _ in
-                                        self?.showDocumentPicker()
+                                        guard let _self = self else { return }
+//                                        self?.showDocumentPicker()
                 }
             case let .custom(icon, title, sourceType, action):
                 addButtonToAddFileView(container,
@@ -453,68 +461,14 @@ extension ChatViewController {
         }
     }
     
-    private func showImagePicker(composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType) {
-        if composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0 {
-            self.showAlertError("Sorry, only one file per message.")
-            return
-        }
-        guard case .photo(let pickerSourceType) = sourceType else {
-            return
-        }
-        
-        showImagePicker(sourceType: pickerSourceType) { [weak self] pickedImage, status in
-            guard status == .authorized else {
-                self?.showImpagePickerAuthorizationStatusAlert(status)
-                return
-            }
-            
-            guard let channel = self?.channelPresenter?.channel else {
-                return
-            }
-            
-            if let pickedImage = pickedImage, let uploaderItem = UploaderItem(channel: channel, pickedImage: pickedImage) {
-                
-                do {
-                    try self?.validateFile(uploaderItem)
-                    self?.composerView.addImageUploaderItem(uploaderItem)
-                } catch {
-                    self?.showAlertError(error.localizedDescription)
-                }
-            }
-        }
-        
+    public func showImagePicker(composerAddFileViewSourceType sourceType: ComposerAddFileView.SourceType) {
+        StreamPickersController.presentImagePicker(vc: self, composerView: composerView, channel: self.channelPresenter?.channel, composerAddFileViewSourceType: sourceType, disposeBag: disposeBag)
         hideAddFileView()
     }
     
+
     private func showDocumentPicker() {
-        if  composerView.imageUploaderItems.count > 0 || composerView.fileUploaderItems.count > 0{
-            self.showAlertError("Sorry, only one file per message.")
-            return
-        }
-        
-        let documentPickerViewController = UIDocumentPickerViewController(documentTypes: [.anyFileType], in: .import)
-        documentPickerViewController.allowsMultipleSelection = true
-        
-        documentPickerViewController.rx.didPickDocumentsAt
-            .takeUntil(documentPickerViewController.rx.deallocated)
-            .subscribe(onNext: { [weak self] in
-                if let self = self, let channel = self.channelPresenter?.channel {
-                    $0.forEach { url in
-                        let item = UploaderItem(channel: channel, url: url)
-                        
-                        do {
-                            try self.validateFile(item)
-                            return self.composerView.addFileUploaderItem(item)
-                        } catch {
-                            self.showAlertError(error.localizedDescription)
-                        }
-                        
-                    }
-                }
-            })
-            .disposed(by: disposeBag)
-        
-        present(documentPickerViewController, animated: true)
+        StreamPickersController.showDocument(vc: self, composerView: composerView, channel: self.channelPresenter?.channel, disposeBag: disposeBag)
         hideAddFileView()
     }
 }
@@ -564,35 +518,8 @@ extension AttachmentError: LocalizedError {
     }
 }
 
-extension ChatViewController {
-    
-    func validateFile(_ item: UploaderItem) throws {
-        guard item.fileSize <= 26_214_400 else { //25MB
-            throw AttachmentError.size
-        }
-        
-        let execExtensions = ["action", "apk", "app", "bat", "bin", "cmd", "com", "command", "cpl", "csh", "exe",
-        "gadget", "inf1", "ins", "inx", "ipa", "isu", "job", "jse", "ksh", "lnk", "msc", "msi",
-        "msp", "mst", "osx", "out", "paf", "pif", "prg", "ps1", "reg", "rgs", "run", "scr",
-        "sct", "shb", "shs", "u3p", "vb", "vbe", "vbs", "vbscript", "workflow", "ws", "wsf",
-        "wsh", "0xe", "73k", "89k", "a6p", "ac", "acc", "acr", "actm", "ahk", "air", "app",
-        "arscript", "as", "asb", "awk", "azw2", "beam", "btm", "cel", "celx", "chm", "cof",
-        "crt", "dek", "dld", "dmc", "docm", "dotm", "dxl", "ear", "ebm", "ebs", "ebs2", "ecf",
-        "eham", "elf", "es", "ex4", "exopc", "ezs", "fas", "fky", "fpi", "frs", "fxp", "gs",
-        "ham", "hms", "hpf", "hta", "iim", "ipf", "isp", "jar", "js", "jsx", "kix", "lo", "ls",
-        "mam", "mcr", "mel", "mpx", "mrc", "ms", "ms", "mxe", "nexe", "obs", "ore", "otm", "pex",
-        "plx", "potm", "ppam", "ppsm", "pptm", "prc", "pvd", "pwc", "pyc", "pyo", "qpx", "rbx",
-        "rox", "rpj", "s2a", "sbs", "sca", "scar", "scb", "script", "smm", "spr", "tcp", "thm",
-        "tlb", "tms", "udf", "upx", "url", "vlx", "vpm", "wcm", "widget", "wiz", "wpk", "wpm",
-        "xap", "xbap", "xlam", "xlm", "xlsm", "xltm", "xqt", "xys", "zl9"]
-        
-        if let fileExtension = item.url?.pathExtension.lowercased() {
-            guard !execExtensions.contains(fileExtension) else {
-                throw AttachmentError.extensionNotAllowed
-            }
-        }
-    }
-    
+
+extension UIViewController {
     func showAlertError(_ message: String) {
         let alert = UIAlertController(title: "Memo", message: message, preferredStyle: .alert)
 
@@ -600,4 +527,10 @@ extension ChatViewController {
 
         self.present(alert, animated: true)
     }
+}
+
+extension ChatViewController {
+    
+
+
 }
