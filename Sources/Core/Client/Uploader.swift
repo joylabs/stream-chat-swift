@@ -12,6 +12,10 @@ import RxSwift
 /// An uploader manager.
 public final class Uploader {
     
+    
+    public init() {
+        
+    }
     /// A list of UploaderItem for the upload.
     public private(set) var items: [UploaderItem] = []
     

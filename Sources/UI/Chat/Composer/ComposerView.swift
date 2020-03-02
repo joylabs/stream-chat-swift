@@ -241,18 +241,21 @@ public extension ComposerView {
     /// - Parameters:
     ///   - view: a superview.
     ///   - placeholderText: a placeholder text.
-    func addToSuperview(_ view: UIView, placeholderText: String = "Type here") {
+    func addToSuperview(_ view: UIView, placeholderText: String = "Type here", setConstraints: Bool = true) {
         guard let style = style else {
             return
         }
         
         // Add to superview.
         view.addSubview(self)
-        snp.makeConstraints { make in
-            make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
-            make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
+        if setConstraints {
+            snp.makeConstraints { make in
+                make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
+                make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
+                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
+            }
         }
+
         
         // Apply style.
         backgroundColor = .white
