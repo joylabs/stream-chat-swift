@@ -255,7 +255,7 @@ public extension ComposerView {
                 make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
             }
         }
-
+    
         
         // Apply style.
         backgroundColor = .white
