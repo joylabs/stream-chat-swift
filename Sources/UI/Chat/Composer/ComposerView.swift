@@ -399,7 +399,7 @@ public extension ComposerView {
         }
     }
     
-    internal func updateStyleState() {
+    func updateStyleState() {
         guard styleState != .disabled else {
             return
         }
