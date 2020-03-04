@@ -120,7 +120,7 @@ extension ChatViewController {
         composerView.attachImageButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let _self = self else { return }
-                self?.showImagePicker(composerAddFileViewSourceType: .photo(.savedPhotosAlbum))
+                self?.showImagePicker(composerAddFileViewSourceType: .photo(.photoLibrary))
                 
             })
             .disposed(by: disposeBag)
