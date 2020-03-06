@@ -101,4 +101,10 @@ extension DateFormatter {
         formatter.dateFormat = "yyyy_MM_dd_HHmmss"
         return formatter
     }()
+    
+    public static let initialMessages: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, yyyy"
+        return formatter
+    }()
 }
