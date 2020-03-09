@@ -29,7 +29,7 @@ public final class ComposerView: UIView {
                 
                 textView.tintColor = styleState.tintColor
                 sendButton.tintColor = styleState.tintColor
-
+                
                 if self.styleState == .edit {
                     sendButton.setTitleColor(styleState.tintColor, for: .normal)
                 } else if self.styleState == .active {
@@ -65,7 +65,7 @@ public final class ComposerView: UIView {
     public private(set) lazy var filesCollectionView = setupFilesCollectionView()
     public var imageUploaderItems: [UploaderItem] = []
     public var fileUploaderItems: [UploaderItem] = []
-
+    
     /// Uploader for images and files.
     public var uploader: Uploader?
     
@@ -100,8 +100,55 @@ public final class ComposerView: UIView {
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: -15, bottom: 0, right: 0)
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -25, bottom: 0, right: 0)
         button.setImage(UIImage.Icons.topic, for: .normal)
-        button.layer.cornerRadius = 10
+        button.layer.cornerRadius = 8
+        button.addTarget(self, action: #selector(dispatchTopicComposer), for: .touchUpInside)
         return button
+    }()
+    
+    public lazy var topicTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "Type topic here"
+        textField.font = Fonts.black.of(size: 14)
+        textField.textColor = UIColor(red: 0, green: 155/255, blue: 234/255, alpha: 1)
+        textField.isHidden = false
+        return textField
+    }()
+    
+    public lazy var topicActionsContainer: UIView = {
+        let container = UIView()
+        container.isHidden = true
+        container.backgroundColor = UIColor(red: 226/255, green: 246/255, blue: 253/255, alpha: 1)
+        container.layer.cornerRadius = 8
+        
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 5
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .center
+        
+        
+        let closeButton = UIButton()
+        closeButton.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        closeButton.tintColor = UIColor(red: 0, green: 155/255, blue: 234/255, alpha: 1)
+        closeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        closeButton.addTarget(self, action: #selector(resetTopicButton), for: .touchUpInside)
+        
+        stackView.addArrangedSubview(topicTextField)
+        stackView.addArrangedSubview(closeButton)
+        container.addSubview(stackView)
+        
+        
+        topicTextField.snp.makeConstraints { make in
+            make.width.equalTo(120)
+        }
+        
+        stackView.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalToSuperview().offset(5)
+            make.bottom.equalToSuperview().offset(-5)
+        }
+        return container
     }()
     
     public lazy var attachImageButton: UIButton = {
@@ -130,6 +177,7 @@ public final class ComposerView: UIView {
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
         stackView.addArrangedSubview(topicButton)
+        stackView.addArrangedSubview(topicActionsContainer)
         stackView.addArrangedSubview(actionsStackView)
         return stackView
     }()
@@ -255,7 +303,7 @@ public extension ComposerView {
                 make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
             }
         }
-    
+        
         
         // Apply style.
         backgroundColor = .white
@@ -266,7 +314,7 @@ public extension ComposerView {
         addSubview(secondDivider)
         addSubview(customStackView)
         addSubview(messagesContainer)
-
+        
         firstDivider.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
@@ -286,7 +334,7 @@ public extension ComposerView {
             sendButton.setTitleColor(style.style(with: .active).tintColor, for: .normal)
             sendButton.setTitleColor(style.style(with: .disabled).tintColor, for: .disabled)
             sendButtonVisibilityBehaviorSubject.onNext((sendButton.isHidden, sendButton.isEnabled))
-  
+            
             sendButton.snp.makeConstraints { make in
                 
                 make.bottom.equalToSuperview().offset(-10)
@@ -336,7 +384,7 @@ public extension ComposerView {
             make.top.equalTo(customStackView.snp.bottom).offset(4)
             make.bottom.equalToSuperview().offset(-10)
         }
-                
+        
         
         updateTextHeightIfNeeded()
         textView.keyboardAppearance = style.textColor.isDark ? .default : .dark
@@ -362,6 +410,11 @@ public extension ComposerView {
         
     }
     
+    func hideTopicsButton(for type: ChatScreenType) {
+        topicActionsContainer.alpha = type == .topic ? 0 : 1
+        topicButton.alpha = type == .topic ? 0 : 1
+    }
+    
     /// Reset states of all child views and clear all added/generated data.
     func reset() {
         isEnabled = true
@@ -375,6 +428,18 @@ public extension ComposerView {
         updateImagesCollectionView()
         updateFilesCollectionView()
         styleState = textView.isFirstResponder ? .active : .normal
+    }
+    
+    @objc func dispatchTopicComposer(_ sender: UIButton) {
+        topicButton.isHidden = true
+        topicActionsContainer.isHidden = false
+        topicTextField.becomeFirstResponder()
+    }
+    
+    @objc func resetTopicButton(_sender: UIButton) {
+        topicActionsContainer.isHidden = true
+        topicButton.isHidden = false
+        topicTextField.text = ""
     }
     
     /// Update the placeholder and send button visibility.

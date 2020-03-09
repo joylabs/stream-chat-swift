@@ -19,8 +19,6 @@ extension Reactive where Base: ChatViewController {
     var keyboard: Binder<KeyboardNotification> {
         return Binder<KeyboardNotification>(base) { chatViewController, keyboardNotification in
             var bottom: CGFloat = 0
-            
-            print(keyboardNotification.height)
             if keyboardNotification.isVisible {
                 bottom = keyboardNotification.height
                     - chatViewController.composerView.toolBar.frame.height
@@ -106,8 +104,8 @@ extension ChatViewController {
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(view)
         
-        composerView.topicButton.alpha = type == .topic ? 0 : 1
-        
+        composerView.hideTopicsButton(for: type)
+                
         tableView.snp.makeConstraints { make in
             make.top.equalTo(aboutThisConversationView.snp.bottom)
             make.leading.trailing.equalToSuperview()
