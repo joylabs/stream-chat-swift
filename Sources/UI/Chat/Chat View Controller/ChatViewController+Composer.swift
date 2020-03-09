@@ -108,6 +108,14 @@ extension ChatViewController {
         
         composerView.topicButton.alpha = type == .topic ? 0 : 1
         
+        composerView.topicButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.composerView.topicButton.isHidden = true
+                self?.composerView.topicActionsContainer.isHidden = false
+                self?.composerView.topicActionsContainer.becomeFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        
         tableView.snp.makeConstraints { make in
             make.top.equalTo(aboutThisConversationView.snp.bottom)
             make.leading.trailing.equalToSuperview()

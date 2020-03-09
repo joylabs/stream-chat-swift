@@ -104,6 +104,49 @@ public final class ComposerView: UIView {
         return button
     }()
     
+    public lazy var topicActionsContainer: UIView = {
+        let container = UIView()
+        container.isHidden = true
+        container.backgroundColor = UIColor(red: 226/255, green: 246/255, blue: 253/255, alpha: 1)
+        container.layer.cornerRadius = 6
+        
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 5
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .center
+        
+        let textField = UITextField()
+   
+        
+        textField.placeholder = "Type topic here"
+        textField.font = Fonts.black.of(size: 14)
+        textField.textColor = UIColor(red: 0, green: 155/255, blue: 234/255, alpha: 1)
+        textField.isHidden = false
+        textField.snp.makeConstraints { make in
+            make.width.equalTo(120)
+        }
+        
+        let closeButton = UIButton()
+        closeButton.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        closeButton.tintColor = UIColor(red: 0, green: 155/255, blue: 234/255, alpha: 1)
+        closeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        closeButton.addTarget(self, action: #selector(resetTopicButton), for: .touchUpInside)
+        
+        stackView.addArrangedSubview(textField)
+        stackView.addArrangedSubview(closeButton)
+        
+        container.addSubview(stackView)
+        
+        stackView.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.top.equalToSuperview().offset(5)
+            make.bottom.equalToSuperview().offset(-5)
+        }
+        return container
+    }()
+    
     public lazy var attachImageButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage.Icons.attachImage, for: .normal)
@@ -130,6 +173,7 @@ public final class ComposerView: UIView {
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
         stackView.addArrangedSubview(topicButton)
+        stackView.addArrangedSubview(topicActionsContainer)
         stackView.addArrangedSubview(actionsStackView)
         return stackView
     }()
@@ -375,6 +419,11 @@ public extension ComposerView {
         updateImagesCollectionView()
         updateFilesCollectionView()
         styleState = textView.isFirstResponder ? .active : .normal
+    }
+    
+    @objc func resetTopicButton(_sender: UIButton) {
+        topicActionsContainer.isHidden = true
+        topicButton.isHidden = false
     }
     
     /// Update the placeholder and send button visibility.
