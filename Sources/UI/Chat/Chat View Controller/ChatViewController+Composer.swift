@@ -106,12 +106,13 @@ extension ChatViewController {
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(view)
         
+        composerView.topicButton.alpha = type == .topic ? 0 : 1
+        
         tableView.snp.makeConstraints { make in
             make.top.equalTo(aboutThisConversationView.snp.bottom)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(composerView.snp.top)
         }
-        
         
         composerView.attachDocumentButton.rx.tap
             .subscribe(onNext: { [weak self] in self?.showDocumentPicker() })
