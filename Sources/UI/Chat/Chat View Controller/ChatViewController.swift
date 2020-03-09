@@ -33,6 +33,10 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     /// Custom tap handlers for accessing events on upper levels
     public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?, _ channelPresenter: ChannelPresenter?) -> Void)?
     public var didTapEmailAttachment: ((_ attachment: Attachment, _ viewController: ChatViewController?) -> Void)?
+    
+    
+    public var onWillAppear: (() -> Void)?
+    public var onWillDisappear: (() -> Void)?
     /// A chat style.
     public lazy var style = defaultStyle
     
@@ -180,6 +184,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        onWillAppear?()
         startGifsAnimations()
         markReadIfPossible()
         
@@ -191,6 +196,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        onWillDisappear?()
         stopGifsAnimations()
     }
     
