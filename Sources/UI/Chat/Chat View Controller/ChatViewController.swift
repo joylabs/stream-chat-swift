@@ -20,9 +20,16 @@ public enum CustomMessageType {
     case virtualThread
     case undefined
 }
+
+public enum ChatScreenType {
+    case topic
+    case conversation
+}
+
 /// A chat view controller of a channel.
 open class ChatViewController: ViewController, UITableViewDataSource, UITableViewDelegate {
     
+    public var type: ChatScreenType = .conversation
     /// Custom tap handlers for accessing events on upper levels
     public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?, _ channelPresenter: ChannelPresenter?) -> Void)?
     public var didTapEmailAttachment: ((_ attachment: Attachment, _ viewController: ChatViewController?) -> Void)?
