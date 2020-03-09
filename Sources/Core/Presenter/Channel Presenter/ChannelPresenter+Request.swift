@@ -80,8 +80,8 @@ extension ChannelPresenter {
         var items = isNextPage ? self.items : []
         
         if items.isEmpty {
-            items.append(.message(parentMessage, []))
             items.append(.status("Start of thread", nil, false))
+            items.append(.message(parentMessage, []))
         }
         
         if let loadingIndex = items.firstIndexWhereStatusLoading() {

@@ -17,13 +17,14 @@ import Photos
 public enum CustomMessageType {
     case conversationBeginning
     case embeddedEmail
+    case virtualThread
     case undefined
 }
 /// A chat view controller of a channel.
 open class ChatViewController: ViewController, UITableViewDataSource, UITableViewDelegate {
     
     /// Custom tap handlers for accessing events on upper levels
-    public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?) -> Void)?
+    public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?, _ channelPresenter: ChannelPresenter?) -> Void)?
     public var didTapEmailAttachment: ((_ attachment: Attachment, _ viewController: ChatViewController?) -> Void)?
     /// A chat style.
     public lazy var style = defaultStyle
@@ -440,6 +441,15 @@ extension ChatViewController {
             
         case let .message(message, readUsers):
             cell = messageCell(at: indexPath, message: message, readUsers: readUsers)
+            let item = items[indexPath.row]
+            
+            // Hides or shows the message depending on if it is a Topic or not
+            // Topic Root messages are identified because they have a replyCount > 0
+            if item.message?.replyCount ?? 0 > 0 {
+                cell.clipsToBounds = true
+            } else {
+                cell.clipsToBounds = false
+            }
         default:
             return .unused
         }
@@ -472,5 +482,13 @@ extension ChatViewController {
     
     open func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
+    }
+    
+    open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let item = items[indexPath.row]
+        if item.message?.replyCount ?? 0 > 0 {
+            return 0
+        }
+        return UITableView.automaticDimension
     }
 }
