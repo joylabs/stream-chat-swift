@@ -169,7 +169,13 @@ extension ChatViewController {
     
     /// Send a message.
     public func send() {
-        let text = composerView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let hasTopic = !(composerView.topicTextField.text?.isEmpty ?? true)
+        let originalMessage = composerView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        var text = originalMessage
+        if hasTopic, let topicText = composerView.topicTextField.text {
+            text = topicText
+        }
+        
         let isMessageEditing = channelPresenter?.editMessage != nil
         
         if findCommand(in: text) != nil || isMessageEditing {
@@ -187,6 +193,17 @@ extension ChatViewController {
                 onNext: { [weak self] messageResponse in
                     if messageResponse.message.type == .error {
                         self?.show(error: ClientError.errorMessage(messageResponse.message))
+                    } else {
+                        if hasTopic {
+                            guard let _self = self else { return }
+                            _self.channelPresenter?.send(text: originalMessage, parentIdMessage: messageResponse.message.id).subscribe(onNext: { replyMessage in
+                                self?.composerView.topicTextField.text = ""
+                            }, onError: { [weak self] in
+                                self?.show(error: $0)
+                            }, onCompleted: {
+                                print("complete")
+                            }).disposed(by: _self.disposeBag)
+                        }
                     }
                 },
                 onError: { [weak self] in

@@ -34,12 +34,17 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     public var didTapMessage: ((_ type: CustomMessageType, _ message: Message, _ viewController: ChatViewController?, _ channelPresenter: ChannelPresenter?) -> Void)?
     public var didTapEmailAttachment: ((_ attachment: Attachment, _ viewController: ChatViewController?) -> Void)?
     
+    public var isVirtualThreadMessage: ((_ message: Message) -> Bool)?
+    public var getIndexPathsToReload: ((_ threadMessage: Message, _ items: [ChatItem]) -> [IndexPath])?
+    
     
     public var onWillAppear: (() -> Void)?
     public var onWillDisappear: (() -> Void)?
     /// A chat style.
     public lazy var style = defaultStyle
     
+    
+    public var hiddenMessagesIds: [String] = []
     /// A default chat style. This is useful for subclasses.
     open var defaultStyle: ChatViewStyle {
         return .default
@@ -375,6 +380,20 @@ extension ChatViewController {
             }
             
         case let .itemsAdded(rows, reloadRow, forceToScroll, items):
+            var rowsToReload: [IndexPath] = []
+            if let message = items.last?.message,
+                let isVirtualThread = self.isVirtualThreadMessage,
+                isVirtualThread(message) {
+                
+                if let getIndexPathsToReload = self.getIndexPathsToReload {
+                    rowsToReload = getIndexPathsToReload(message, self.items)
+                    for indexPath in rowsToReload {
+                        guard let message = self.items[indexPath.row].message else { continue }
+                        self.hiddenMessagesIds.append(message.id)
+                    }
+                    print("rowsToReload", rowsToReload)
+                }
+            }
             self.items = items
             let needsToScroll = tableView.bottomContentOffset < bottomThreshold
             tableView.stayOnScrollOnce = scrollEnabled && needsToScroll && !forceToScroll
@@ -388,7 +407,13 @@ extension ChatViewController {
                     tableView.insertRows(at: rows.map(IndexPath.row), with: .none)
                     
                     if let reloadRow = reloadRow {
+                        print("reloading", reloadRow)
                         tableView.reloadRows(at: [.row(reloadRow)], with: .none)
+                    }
+                    
+                    if !rowsToReload.isEmpty {
+                        print("reloading", rowsToReload)
+                        tableView.reloadRows(at: rowsToReload, with: .none)
                     }
                 })
                 
@@ -499,7 +524,7 @@ extension ChatViewController {
     
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = items[indexPath.row]
-        if item.message?.replyCount ?? 0 > 0 {
+        if let message = item.message, message.replyCount > 0 || hiddenMessagesIds.contains(message.id)  {
             return 0
         }
         return UITableView.automaticDimension
