@@ -100,7 +100,6 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     public private(set) lazy var aboutThisConversationView: UIView = {
         let container = UIView()
-        
         view.addSubview(container)
         container.snp.makeConstraints { make in
             make.leading.trailing.top.equalToSuperview()
@@ -147,6 +146,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         
         updateTitle()
         initializeChannelPresenter()
+        setupComposerView()
         needsToReload = false
         changesEnabled = true
         setupFooterUpdates()
@@ -170,8 +170,6 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
                 .takeWhile { $0.config.isEmpty }
                 .subscribe(onCompleted: { [weak self] in self?.setupComposerView() })
                 .disposed(by: disposeBag)
-        } else {
-            setupComposerView()
         }
         
         composerView.uploader = presenter.uploader
