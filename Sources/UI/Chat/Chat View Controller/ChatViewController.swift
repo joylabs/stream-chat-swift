@@ -146,7 +146,21 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         view.backgroundColor = style.incomingMessage.chatBackgroundColor
         
         updateTitle()
+        initializeChannelPresenter()
+        needsToReload = false
+        changesEnabled = true
+        setupFooterUpdates()
         
+        Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
+    }
+    
+    
+    open func emptyTableView() {
+        self.items = []
+        self.tableView.reloadData()
+    }
+    
+    open func initializeChannelPresenter() {
         guard let presenter = channelPresenter else {
             return
         }
@@ -179,13 +193,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         } else {
             refreshTableView(scrollToBottom: true, animated: false)
         }
-        
-        needsToReload = false
-        changesEnabled = true
-        setupFooterUpdates()
-        
-        Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
     }
+    
     
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
