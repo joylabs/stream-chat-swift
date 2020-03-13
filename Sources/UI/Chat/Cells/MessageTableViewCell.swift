@@ -136,6 +136,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
     public private(set) lazy var messageLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.numberOfLines = 0
+        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
     
