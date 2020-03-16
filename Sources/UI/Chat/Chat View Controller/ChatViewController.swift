@@ -100,7 +100,6 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     public private(set) lazy var aboutThisConversationView: UIView = {
         let container = UIView()
-        
         view.addSubview(container)
         container.snp.makeConstraints { make in
             make.leading.trailing.top.equalToSuperview()
@@ -146,7 +145,22 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         view.backgroundColor = style.incomingMessage.chatBackgroundColor
         
         updateTitle()
+        initializeChannelPresenter()
+        setupComposerView()
+        needsToReload = false
+        changesEnabled = true
+        setupFooterUpdates()
         
+        Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
+    }
+    
+    
+    open func emptyTableView() {
+        self.items = []
+        self.tableView.reloadData()
+    }
+    
+    open func initializeChannelPresenter() {
         guard let presenter = channelPresenter else {
             return
         }
@@ -156,8 +170,6 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
                 .takeWhile { $0.config.isEmpty }
                 .subscribe(onCompleted: { [weak self] in self?.setupComposerView() })
                 .disposed(by: disposeBag)
-        } else {
-            setupComposerView()
         }
         
         composerView.uploader = presenter.uploader
@@ -179,13 +191,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         } else {
             refreshTableView(scrollToBottom: true, animated: false)
         }
-        
-        needsToReload = false
-        changesEnabled = true
-        setupFooterUpdates()
-        
-        Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
     }
+    
     
     open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
