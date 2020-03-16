@@ -136,6 +136,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
     public private(set) lazy var messageLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.numberOfLines = 0
+        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
     
@@ -246,18 +247,19 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
         messageLabel.snp.makeConstraints { make in
             make.left.equalTo(8)
             make.right.equalTo(-8)
-            make.top.equalTo(4).priority(999)
+            make.top.equalTo(4)
             make.height.greaterThanOrEqualTo(23)
             self.attachmentWidthConstraint = make.width.equalTo(200 - 16).constraint
             self.attachmentWidthConstraint?.deactivate()
-            make.bottom.equalTo(-6).priority(999)
+            make.bottom.equalTo(-6)
         }
         
         contentView.addSubview(messageStackView)
         messageStackView.alignment = style.alignment == .left ? .leading : .trailing
         messageStackView.snp.makeConstraints { make in
-            messageStackViewTopConstraint = make.top.equalToSuperview().offset(style.spacing.vertical).priority(999).constraint
-            make.bottom.equalToSuperview().priority(999)
+            messageStackViewTopConstraint = make.top.equalToSuperview().offset(style.spacing.vertical).constraint
+            make.bottom.equalToSuperview()
+            make.height.greaterThanOrEqualTo(25)
             
             if style.alignment == .left {
                 make.left.equalToSuperview().offset(style.marginWithAvatarOffset).priority(999)
