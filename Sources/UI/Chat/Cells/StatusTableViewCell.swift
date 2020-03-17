@@ -77,7 +77,7 @@ final class StatusTableViewCell: UITableViewCell, Reusable {
         
         titleLabel.text = title.uppercased()
         titleLabel.textColor = textColor
-        lineView1.backgroundColor = textColor.withAlphaComponent(0.5)
+        lineView1.backgroundColor = .clear//textColor.withAlphaComponent(0.5)
         lineView2.backgroundColor = lineView1.backgroundColor
         
         if let subtitle = subtitle {
