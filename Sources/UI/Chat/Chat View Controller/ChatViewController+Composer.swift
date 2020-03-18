@@ -198,6 +198,7 @@ extension ChatViewController {
                             guard let _self = self else { return }
                             _self.channelPresenter?.send(text: originalMessage, parentIdMessage: messageResponse.message.id).subscribe(onNext: { replyMessage in
                                 self?.composerView.topicTextField.text = ""
+                                _self.redirectToTopic?( messageResponse.message, _self, _self.channelPresenter)
                             }, onError: { [weak self] in
                                 self?.show(error: $0)
                             }, onCompleted: {
