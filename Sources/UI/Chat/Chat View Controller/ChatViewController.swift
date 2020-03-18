@@ -40,6 +40,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     public var onWillAppear: (() -> Void)?
     public var onWillDisappear: (() -> Void)?
+    public var redirectToTopic: ((_ message: Message, _ vc: UIViewController, _ channelPresenter: ChannelPresenter?) -> Void)?
     /// A chat style.
     public lazy var style = defaultStyle
     
