@@ -411,8 +411,13 @@ public extension ComposerView {
     }
     
     func hideTopicsButton(for type: ChatScreenType) {
+        #if STAGING || DEVELOP
         topicActionsContainer.alpha = type == .topic ? 0 : 1
         topicButton.alpha = type == .topic ? 0 : 1
+        #else
+        topicActionsContainer.alpha = 0
+        topicButton.alpha = 0 
+        #endif
     }
     
     /// Reset states of all child views and clear all added/generated data.
