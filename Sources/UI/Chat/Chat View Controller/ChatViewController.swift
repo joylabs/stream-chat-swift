@@ -72,6 +72,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     }
     
     /// A composer view.
+    
+    public var sendButtonTapSubscription: Disposable?
     public private(set) lazy var composerView = createComposerView()
     var keyboardIsVisible = false
     
