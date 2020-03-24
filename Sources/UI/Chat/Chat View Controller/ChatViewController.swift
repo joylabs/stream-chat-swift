@@ -71,6 +71,21 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         return reactionsView == nil
     }
     
+    
+    var composerContainerView = UIView()
+    var toolbar = UIToolbar()
+    
+    open override var inputAccessoryView: UIView{
+         get{
+             return self.toolbar
+         }
+     }
+    
+    open  override var canBecomeFirstResponder: Bool {
+        get {
+            return true
+        }
+    }
     /// A composer view.
     
     public var sendButtonTapSubscription: Disposable?

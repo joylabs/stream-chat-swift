@@ -294,19 +294,21 @@ public extension ComposerView {
             return
         }
         
+        
         // Add to superview.
         view.addSubview(self)
         if setConstraints {
             snp.makeConstraints { make in
-                make.left.equalTo(view.safeAreaLayoutGuide.snp.leftMargin)
-                make.right.equalTo(view.safeAreaLayoutGuide.snp.rightMargin)
-                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottomMargin)
+                make.top.equalTo(view.snp.top).offset(50)
+                make.left.equalTo(view.snp.leftMargin)
+                make.right.equalTo(view.snp.rightMargin)
+                make.bottom.equalTo(view.snp.bottomMargin)
             }
         }
         
         
         // Apply style.
-        backgroundColor = .white
+        backgroundColor = .red
         clipsToBounds = true
         addSubview(firstDivider)
         addSubview(imagesCollectionView)

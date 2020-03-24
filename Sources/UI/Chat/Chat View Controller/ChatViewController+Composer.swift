@@ -101,15 +101,33 @@ extension ChatViewController {
             return
         }
         
+        composerContainerView = UIView()
+        composerContainerView.backgroundColor = .random
+        
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
-        composerView.addToSuperview(view)
+        composerView.addToSuperview(composerContainerView)
+        
+        
+        toolbar.backgroundColor = .yellow
+        toolbar.setItems([UIBarButtonItem(customView: composerContainerView)], animated: false)
+        
+        
+        view.addSubview(toolbar)
+        
+        toolbar.snp.makeConstraints { (make) in
+            make.leading.bottom.trailing.equalToSuperview()
+        }
+        
+//        containerView.snp.makeConstraints { (make) in
+//            make.leading.bottom.trailing.equalToSuperview()
+//        }
         
         composerView.hideTopicsButton(for: type)
                 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(aboutThisConversationView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(composerView.snp.top)
+            
         }
         
         composerView.attachDocumentButton.rx.tap
