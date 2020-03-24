@@ -116,6 +116,7 @@ extension ChatViewController {
             .subscribe(onNext: { [weak self] in self?.showDocumentPicker() })
             .disposed(by: disposeBag)
         
+
         composerView.attachImageButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 guard let _self = self else { return }
@@ -144,9 +145,11 @@ extension ChatViewController {
             .subscribe()
             .disposed(by: disposeBag)
         
-        composerView.sendButton.rx.tap
-            .subscribe(onNext: { [weak self] in self?.send() })
-            .disposed(by: disposeBag)
+        
+        sendButtonTapSubscription = composerView.sendButton.rx.tap
+        .subscribe(onNext: { [weak self] in self?.send() })
+        sendButtonTapSubscription?.disposed(by: disposeBag)
+        
         
         Keyboard.shared.notification
             .filter { $0.isHidden }
