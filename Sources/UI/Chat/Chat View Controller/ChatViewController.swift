@@ -77,10 +77,10 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     
     open override var inputAccessoryView: UIView {
          get {
-             return self.toolbar
+             return self.composerContainerView
          }
      }
-    
+
     open  override var canBecomeFirstResponder: Bool {
         get {
             return true

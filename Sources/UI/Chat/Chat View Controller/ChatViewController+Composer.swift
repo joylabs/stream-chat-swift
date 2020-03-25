@@ -157,12 +157,19 @@ extension ChatViewController {
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(composerContainerView)
         
-        
-        toolbar.growingView = composerContainerView
-        toolbar.backgroundColor = .yellow
-        
-        view.addSubview(toolbar)
 
+        
+        
+//        toolbar.growingView = composerContainerView
+//        toolbar.backgroundColor = .yellow
+        
+        composerContainerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+        view.addSubview(composerContainerView)
+        composerContainerView.snp.makeConstraints { (make) in
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        self.view.becomeFirstResponder()
         composerView.hideTopicsButton(for: type)
                 
         tableView.snp.makeConstraints { make in
