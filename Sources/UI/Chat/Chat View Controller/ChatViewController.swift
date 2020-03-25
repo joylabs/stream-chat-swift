@@ -534,8 +534,21 @@ extension ChatViewController {
     
     open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = items[indexPath.row]
-        if let message = item.message, message.replyCount > 0 || hiddenMessagesIds.contains(message.id)  {
-            return 0
+        let currentMessage = item.message
+        let metadata = item.message?.extraData?.object as? MessageMetadataInfo
+        let alreadyReceivedRealTopicMessage = items.firstIndex { (item) -> Bool in
+            if let metatada = item.message?.extraData?.object as? MessageMetadataInfo, let threadId = metatada.joylabs.thread_id {
+                return threadId == currentMessage?.id
+            }
+            return false
+        }
+        
+        if let isTopic = metadata?.joylabs.isTopicMessage, isTopic, alreadyReceivedRealTopicMessage == nil {
+             return UITableView.automaticDimension
+        } else {
+            if let message = item.message, message.replyCount > 0 || hiddenMessagesIds.contains(message.id)  {
+                return 0
+            }
         }
         return UITableView.automaticDimension
     }

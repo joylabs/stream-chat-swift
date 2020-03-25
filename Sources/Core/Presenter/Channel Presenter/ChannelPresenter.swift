@@ -214,11 +214,12 @@ extension ChannelPresenter {
     /// - Parameters:
     ///     - text: a message text
     ///     - completion: a completion blocks
-    public func send(text: String, parentIdMessage: String? = nil) -> Observable<MessageResponse> {
+    public func send(text: String, parentIdMessage: String? = nil, isTopicMessage: Bool = false) -> Observable<MessageResponse> {
         let messageId = editMessage?.id ?? ""
         var attachments = uploader.items.compactMap({ $0.attachment })
         let parentId = parentIdMessage == nil ? parentMessage?.id : parentIdMessage
         var extraData: Codable? = nil
+        
         
         if attachments.isEmpty, let editMessage = editMessage, !editMessage.attachments.isEmpty {
             attachments = editMessage.attachments
@@ -226,6 +227,10 @@ extension ChannelPresenter {
         
         if let messageExtraDataCallback = messageExtraDataCallback {
             extraData = messageExtraDataCallback(messageId, text, attachments, parentId)
+        }
+
+        if isTopicMessage {
+            extraData = MessageMetadataInfo(joylabs: EmbeddedMessageInfo(html: nil, thread_id: nil, messageType: nil, isTopicMessage: true))
         }
         
         editMessage = nil
@@ -251,7 +256,9 @@ extension ChannelPresenter {
                               showReplyInChannel: false)
         
         return channel.send(message: message)
-            .do(onNext: { [weak self] in self?.updateEphemeralMessage($0.message) })
+            .do(onNext: { [weak self] in
+                self?.updateEphemeralMessage($0.message)
+            })
             .observeOn(MainScheduler.instance)
     }
 }
