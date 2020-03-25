@@ -72,11 +72,11 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     }
     
     
-    var composerContainerView = UIView()
-    var toolbar = UIToolbar()
+    var composerContainerView = ObservableHeightView()
+    var toolbar = AutoToolBar()
     
-    open override var inputAccessoryView: UIView{
-         get{
+    open override var inputAccessoryView: UIView {
+         get {
              return self.toolbar
          }
      }

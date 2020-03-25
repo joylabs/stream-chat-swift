@@ -299,7 +299,7 @@ public extension ComposerView {
         view.addSubview(self)
         if setConstraints {
             snp.makeConstraints { make in
-                make.top.equalTo(view.snp.top).offset(50)
+                make.top.equalTo(view.snp.top)
                 make.left.equalTo(view.snp.leftMargin)
                 make.right.equalTo(view.snp.rightMargin)
                 make.bottom.equalTo(view.snp.bottomMargin)

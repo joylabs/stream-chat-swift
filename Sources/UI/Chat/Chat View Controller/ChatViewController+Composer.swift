@@ -87,6 +87,56 @@ public extension ChatViewController {
 }
 
 // MARK: Setup
+extension UIView {
+    func calculatePreferredHeight(preferredWidth: CGFloat? = nil) -> CGFloat {
+        let width = preferredWidth ?? frame.width
+        let widthConstraint = NSLayoutConstraint.constraints(withVisualFormat: "H:[view(==\(width)@999)]", options: [], metrics: nil, views: ["view": self])
+        addConstraints(widthConstraint)
+        let height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        removeConstraints(widthConstraint)
+        return height
+    }
+}
+
+class ObservableHeightView: UIView {
+    var toolBar: AutoToolBar?
+    override func layoutSubviews() {
+        print("\(self): layoutSubviews()")
+        toolBar?.recalculateHeight()
+    }
+}
+
+class AutoToolBar: UIToolbar {
+    private var heightConstraint: Constraint?
+    var growingView: ObservableHeightView? {
+        didSet {
+            guard let sv = growingView else { return }
+            sv.toolBar = self
+            let height = sv.calculatePreferredHeight()
+            self.bounds.size.height = height
+            setItems([UIBarButtonItem(customView: sv)], animated: false)
+            self.snp.makeConstraints { make in
+                self.heightConstraint = make.height.equalTo(height).constraint
+            }
+        }
+    }
+    
+    var paddingTop: CGFloat = 0 {
+        didSet {
+            self.recalculateHeight()
+        }
+    }
+    
+    func recalculateHeight() {
+        guard let sv = growingView else { return }
+        let height = sv.calculatePreferredHeight() + paddingTop
+        self.heightConstraint?.update(offset: height)
+        print("\(self): recalculateHeight()")
+        self.layoutIfNeeded()
+    }
+}
+
+
 
 extension ChatViewController {
     
@@ -101,33 +151,24 @@ extension ChatViewController {
             return
         }
         
-        composerContainerView = UIView()
-        composerContainerView.backgroundColor = .random
+        composerContainerView = ObservableHeightView()
+        composerContainerView.backgroundColor = .green
         
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(composerContainerView)
         
         
+        toolbar.growingView = composerContainerView
         toolbar.backgroundColor = .yellow
-        toolbar.setItems([UIBarButtonItem(customView: composerContainerView)], animated: false)
-        
         
         view.addSubview(toolbar)
-        
-        toolbar.snp.makeConstraints { (make) in
-            make.leading.bottom.trailing.equalToSuperview()
-        }
-        
-//        containerView.snp.makeConstraints { (make) in
-//            make.leading.bottom.trailing.equalToSuperview()
-//        }
-        
+
         composerView.hideTopicsButton(for: type)
                 
         tableView.snp.makeConstraints { make in
             make.top.equalTo(aboutThisConversationView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            
+            make.bottom.equalToSuperview()
         }
         
         composerView.attachDocumentButton.rx.tap
@@ -169,10 +210,10 @@ extension ChatViewController {
         sendButtonTapSubscription?.disposed(by: disposeBag)
         
         
-        Keyboard.shared.notification
-            .filter { $0.isHidden }
-            .subscribe(onNext: { [weak self] _ in self?.showCommands(show: false) })
-            .disposed(by: disposeBag)
+//        Keyboard.shared.notification
+//            .filter { $0.isHidden }
+//            .subscribe(onNext: { [weak self] _ in self?.showCommands(show: false) })
+//            .disposed(by: disposeBag)
     }
     
     private func dispatchCommands(in text: String) {
