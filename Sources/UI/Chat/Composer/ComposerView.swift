@@ -411,7 +411,7 @@ public extension ComposerView {
     }
     
     func hideTopicsButton(for type: ChatScreenType) {
-        #if STAGING || DEVELOP
+        #if STAGING || DEVELOP || DEVELOP2
         topicActionsContainer.alpha = type == .topic ? 0 : 1
         topicButton.alpha = type == .topic ? 0 : 1
         #else
