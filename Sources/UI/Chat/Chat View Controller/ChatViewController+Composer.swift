@@ -97,12 +97,17 @@ extension ChatViewController {
     }
     
     func setupComposerView() {
+
         guard composerView.superview == nil else {
             return
         }
         
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(view)
+        
+        if type == .preview {
+            composerView.isHidden = true
+        }
         
         composerView.hideTopicsButton(for: type)
                 
