@@ -103,6 +103,10 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     private(set) lazy var composerCommandsContainerView = createComposerCommandsContainerView()
     private(set) lazy var composerAddFileContainerView = createComposerAddFileContainerView(title: "Add a file")
     
+    var gradientView: UIImageView?
+    var joinButton: UIButton?
+    var dismissButton: UIButton?
+    
     
     public private(set) lazy var aboutThisConversationView: UIView = {
         let container = UIView()
@@ -156,9 +160,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         needsToReload = false
         changesEnabled = true
         setupFooterUpdates()
-
         setupJoiningOptions()
-        
         Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
     }
     
@@ -171,11 +173,24 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         onAcceptInvite?()
     }
     
+    open func hidePreviewAndEnableComposer() {
+        self.type = .conversation
+        gradientView?.removeFromSuperview()
+        joinButton?.removeFromSuperview()
+        dismissButton?.removeFromSuperview()
+        composerView.isHidden = false
+//        composerView.removeFromSuperview()
+//        setupComposerView()
+    }
+    
     func setupJoiningOptions() {
         if type == .preview {
             let bundle = Bundle(for: ChatViewController.self)
-            let gradientView = UIImageView()
-            let joinButton = UIButton()
+            gradientView = UIImageView()
+            joinButton = UIButton()
+            dismissButton = UIButton()
+            
+            guard let gradientView = gradientView, let joinButton = joinButton, let dismissButton = dismissButton else { return }
             joinButton.setTitle("Join", for: .normal)
             joinButton.backgroundColor = #colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1)
             joinButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
@@ -187,7 +202,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
             joinButton.layer.shadowOpacity = 0.5
             joinButton.addTarget(self, action: #selector(acceptInvite), for: .touchUpInside)
             
-            let dismissButton = UIButton()
+            
             dismissButton.setTitle("Dismiss", for: .normal)
             dismissButton.setTitleColor(#colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1), for: .normal)
             dismissButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
