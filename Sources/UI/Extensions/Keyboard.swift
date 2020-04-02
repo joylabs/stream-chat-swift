@@ -24,7 +24,6 @@ struct Keyboard {
                 .map { KeyboardNotification($0) }
         
         notification = Observable.merge(keyboardNotifications)
-            .distinctUntilChanged()
             .observeOn(MainScheduler.instance)
             .share()
             .catchErrorJustReturn(KeyboardNotification(.init(name: UIResponder.keyboardWillChangeFrameNotification)))
