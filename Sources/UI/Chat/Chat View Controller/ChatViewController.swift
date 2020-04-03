@@ -24,6 +24,7 @@ public enum CustomMessageType {
 public enum ChatScreenType {
     case topic
     case conversation
+    case preview
 }
 
 /// A chat view controller of a channel.
@@ -38,6 +39,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     public var getIndexPathsToReload: ((_ threadMessage: Message, _ items: [ChatItem]) -> [IndexPath])?
     
     
+    public var onAcceptInvite: (() -> Void)?
+    public var onDismissInvite: (() -> Void)?
     public var onWillAppear: (() -> Void)?
     public var onWillDisappear: (() -> Void)?
     public var redirectToTopic: ((_ message: Message, _ vc: UIViewController, _ channelPresenter: ChannelPresenter?) -> Void)?
@@ -100,6 +103,10 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     private(set) lazy var composerCommandsContainerView = createComposerCommandsContainerView()
     private(set) lazy var composerAddFileContainerView = createComposerAddFileContainerView(title: "Add a file")
     
+    var gradientView: UIImageView?
+    var joinButton: UIButton?
+    var dismissButton: UIButton?
+    
     
     public private(set) lazy var aboutThisConversationView: UIView = {
         let container = UIView()
@@ -153,8 +160,87 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         needsToReload = false
         changesEnabled = true
         setupFooterUpdates()
-        
+        setupJoiningOptions()
         Keyboard.shared.notification.bind(to: rx.keyboard).disposed(by: self.disposeBag)
+    }
+    
+    
+    @objc func dismissInvite() {
+        onDismissInvite?()
+    }
+    
+    @objc func acceptInvite() {
+        onAcceptInvite?()
+    }
+    
+    open func hidePreviewAndEnableComposer() {
+        self.type = .conversation
+        gradientView?.removeFromSuperview()
+        joinButton?.removeFromSuperview()
+        dismissButton?.removeFromSuperview()
+        composerView.isHidden = false
+        channelPresenter?.reload()
+    }
+    
+    func setupJoiningOptions() {
+        if type == .preview {
+            let bundle = Bundle(for: ChatViewController.self)
+            gradientView = UIImageView()
+            joinButton = UIButton()
+            dismissButton = UIButton()
+            
+            guard let gradientView = gradientView, let joinButton = joinButton, let dismissButton = dismissButton else { return }
+            joinButton.setTitle("Join", for: .normal)
+            joinButton.backgroundColor = #colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1)
+            joinButton.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
+            joinButton.layer.cornerRadius = 6
+            joinButton.titleLabel?.font = Fonts.bold.of(size: 16)
+            joinButton.layer.shadowColor = #colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1)
+            joinButton.layer.shadowRadius = 6
+            joinButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+            joinButton.layer.shadowOpacity = 0.5
+            joinButton.addTarget(self, action: #selector(acceptInvite), for: .touchUpInside)
+            
+            
+            dismissButton.setTitle("Dismiss", for: .normal)
+            dismissButton.setTitleColor(#colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1), for: .normal)
+            dismissButton.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            dismissButton.layer.cornerRadius = 6
+            dismissButton.layer.borderColor = #colorLiteral(red: 0, green: 0.6078431373, blue: 0.9176470588, alpha: 1)
+            dismissButton.layer.borderWidth = 1
+            dismissButton.titleLabel?.font = Fonts.bold.of(size: 16)
+            dismissButton.addTarget(self, action: #selector(dismissInvite), for: .touchUpInside)
+            
+            
+            gradientView.image = UIImage(named: "JoinGradient", in: bundle, compatibleWith: nil)
+            gradientView.contentMode = .scaleAspectFill
+            
+            view.addSubview(gradientView)
+            view.addSubview(joinButton)
+            view.addSubview(dismissButton)
+            
+            
+            joinButton.snp.makeConstraints { make in
+                make.width.equalToSuperview().multipliedBy(0.8)
+                make.height.equalTo(50)
+                make.centerX.equalToSuperview()
+                make.bottom.equalTo(dismissButton.snp.top).offset(-15)
+            }
+            
+            
+            dismissButton.snp.makeConstraints { make in
+                make.width.equalToSuperview().multipliedBy(0.70)
+                make.height.equalTo(35)
+                make.centerX.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-40)
+            }
+            
+            gradientView.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.bottom.equalTo(view.snp.bottom)
+                make.height.equalTo(view.snp.height).multipliedBy(0.5)
+            }
+        }
     }
     
     
@@ -164,6 +250,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     }
     
     open func initializeChannelPresenter() {
+        
         guard let presenter = channelPresenter else {
             return
         }

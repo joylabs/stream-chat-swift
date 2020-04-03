@@ -241,7 +241,7 @@ open class MessageTableViewCell: UITableViewCell, Reusable {
         messageLabel.numberOfLines = 0
         messageLabel.font = style.font
         messageLabel.textColor = style.textColor
-        messageLabel.backgroundColor = style.backgroundColor
+        messageLabel.backgroundColor = backgroundColor
         messageContainerView.addSubview(messageLabel)
         
         messageLabel.snp.makeConstraints { make in

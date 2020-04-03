@@ -97,12 +97,17 @@ extension ChatViewController {
     }
     
     func setupComposerView() {
+
         guard composerView.superview == nil else {
             return
         }
         
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(view)
+        
+        if type == .preview {
+            composerView.isHidden = true
+        }
         
         composerView.hideTopicsButton(for: type)
                 
@@ -171,6 +176,7 @@ extension ChatViewController {
     // MARK: Send Message
     
     /// Send a message.
+
     public func send() {
         let hasTopic = !(composerView.topicTextField.text?.isEmpty ?? true)
         let originalMessage = composerView.text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -205,8 +211,8 @@ extension ChatViewController {
                                 _self.redirectToTopic?( messageResponse.message, _self, _self.channelPresenter)
                             }, onError: { [weak self] in
                                 self?.show(error: $0)
-                            }, onCompleted: {
-                                print("complete")
+                                }, onCompleted: {
+                                    print("complete")
                             }).disposed(by: _self.disposeBag)
                         }
                     }
@@ -217,6 +223,7 @@ extension ChatViewController {
                 },
                 onCompleted: { [weak self] in self?.composerView.reset() })
             .disposed(by: disposeBag)
+        
     }
     
     private func findCommand(in text: String) -> String? {
