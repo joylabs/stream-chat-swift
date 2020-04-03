@@ -176,6 +176,7 @@ extension ChatViewController {
     // MARK: Send Message
     
     /// Send a message.
+
     public func send() {
         let hasTopic = !(composerView.topicTextField.text?.isEmpty ?? true)
         let originalMessage = composerView.text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -196,6 +197,7 @@ extension ChatViewController {
         
         composerView.isEnabled = false
         
+        
         channelPresenter?.send(text: text, isTopicMessage: hasTopic)
             .subscribe(
                 onNext: { [weak self] messageResponse in
@@ -209,8 +211,8 @@ extension ChatViewController {
                                 _self.redirectToTopic?( messageResponse.message, _self, _self.channelPresenter)
                             }, onError: { [weak self] in
                                 self?.show(error: $0)
-                            }, onCompleted: {
-                                print("complete")
+                                }, onCompleted: {
+                                    print("complete")
                             }).disposed(by: _self.disposeBag)
                         }
                     }
@@ -219,7 +221,9 @@ extension ChatViewController {
                     self?.composerView.reset()
                     self?.show(error: $0)
                 },
+                onCompleted: { [weak self] in self?.composerView.reset() })
             .disposed(by: disposeBag)
+        
     }
     
     private func findCommand(in text: String) -> String? {
