@@ -196,7 +196,6 @@ extension ChatViewController {
         
         composerView.isEnabled = false
         
-        
         channelPresenter?.send(text: text, isTopicMessage: hasTopic)
             .subscribe(
                 onNext: { [weak self] messageResponse in
@@ -220,7 +219,6 @@ extension ChatViewController {
                     self?.composerView.reset()
                     self?.show(error: $0)
                 },
-                onCompleted: { [weak self] in self?.composerView.reset() })
             .disposed(by: disposeBag)
     }
     

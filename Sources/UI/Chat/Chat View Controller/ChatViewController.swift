@@ -170,10 +170,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     }
     
     @objc func acceptInvite() {
-//        onAcceptInvite?()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.hidePreviewAndEnableComposer()
-        }
+        onAcceptInvite?()
     }
     
     open func hidePreviewAndEnableComposer() {
@@ -182,9 +179,7 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
         joinButton?.removeFromSuperview()
         dismissButton?.removeFromSuperview()
         composerView.isHidden = false
-//        composerView.removeFromSuperview()
-//        composerView = createComposerView()
-//        setupComposerView()
+        channelPresenter?.reload()
     }
     
     func setupJoiningOptions() {
