@@ -173,6 +173,21 @@ public final class WebSocket {
 extension WebSocket {
     
     func parseConnection(appState: AppState, isInternetAvailable: Bool, event: WebSocketEvent) -> Connection? {
+        #if DEBUG
+        switch event {
+        case .connected:
+            print("[WS] Connected")
+        case .data(let data):
+            print("[WS] Data:\n\(data)")
+        case .disconnected(let error):
+            print("[WS] Disconnected wit error: \(error)")
+        case .message(let mes):
+            print("[WS] Message:\n\(mes)")
+        case .pong:
+            print("[WS] Pong")
+        }
+        #endif
+
         guard webSocketInitiated else {
             return .notConnected
         }
