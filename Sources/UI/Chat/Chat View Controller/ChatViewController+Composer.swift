@@ -105,7 +105,7 @@ extension ChatViewController {
         composerView.attachmentButton.isHidden = composerAddFileContainerView == nil
         composerView.addToSuperview(view)
         
-        if type == .preview {
+        if type == .preview || type == .previewDismissed {
             composerView.isHidden = true
         }
         

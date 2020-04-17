@@ -25,6 +25,7 @@ public enum ChatScreenType {
     case topic
     case conversation
     case preview
+    case previewDismissed
 }
 
 /// A chat view controller of a channel.
@@ -183,7 +184,8 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
     }
     
     func setupJoiningOptions() {
-        if type == .preview {
+        if type == .preview || type == .previewDismissed {
+            
             let bundle = Bundle(for: ChatViewController.self)
             gradientView = UIImageView()
             joinButton = UIButton()
@@ -217,23 +219,35 @@ open class ChatViewController: ViewController, UITableViewDataSource, UITableVie
             
             view.addSubview(gradientView)
             view.addSubview(joinButton)
-            view.addSubview(dismissButton)
-            
-            
-            joinButton.snp.makeConstraints { make in
-                make.width.equalToSuperview().multipliedBy(0.8)
-                make.height.equalTo(50)
-                make.centerX.equalToSuperview()
-                make.bottom.equalTo(dismissButton.snp.top).offset(-15)
+            if type == .preview {
+                view.addSubview(dismissButton)
+                joinButton.snp.makeConstraints { make in
+                    make.width.equalToSuperview().multipliedBy(0.8)
+                    make.height.equalTo(50)
+                    make.centerX.equalToSuperview()
+                    make.bottom.equalTo(dismissButton.snp.top).offset(-15)
+                }
+                
+                
+                dismissButton.snp.makeConstraints { make in
+                    make.width.equalToSuperview().multipliedBy(0.70)
+                    make.height.equalTo(35)
+                    make.centerX.equalToSuperview()
+                    make.bottom.equalToSuperview().offset(-40)
+                }
+            } else {
+                
+                joinButton.snp.makeConstraints { make in
+                    make.width.equalToSuperview().multipliedBy(0.8)
+                    make.height.equalTo(50)
+                    make.centerX.equalToSuperview()
+                    make.bottom.equalTo(view.snp.bottomMargin).offset(-15)
+                }
             }
             
             
-            dismissButton.snp.makeConstraints { make in
-                make.width.equalToSuperview().multipliedBy(0.70)
-                make.height.equalTo(35)
-                make.centerX.equalToSuperview()
-                make.bottom.equalToSuperview().offset(-40)
-            }
+            
+
             
             gradientView.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
