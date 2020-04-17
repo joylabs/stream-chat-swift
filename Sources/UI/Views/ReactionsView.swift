@@ -18,7 +18,7 @@ final class ReactionsView: UIView {
     
     private let disposeBag = DisposeBag()
     
-    private lazy var avatarsStackView = createAvatarsStackView()
+//    private lazy var avatarsStackView = createAvatarsStackView()
     private lazy var emojiesStackView = cerateEmojiesStackView()
     private lazy var labelsStackView = createLabelsStackView()
     private var reactionCounts: [ReactionType: Int]?
@@ -50,8 +50,8 @@ final class ReactionsView: UIView {
         alpha = 0
         
         ReactionType.allCases.forEach { reactionType in
-            let users = message.latestReactions.filter({ $0.type == reactionType }).compactMap({ $0.user })
-            avatarsStackView.addArrangedSubview(createAvatarView(users))
+//            let users = message.latestReactions.filter({ $0.type == reactionType }).compactMap({ $0.user })
+//            avatarsStackView.addArrangedSubview(createAvatarView(users))
             emojiesStackView.addArrangedSubview(createEmojiView(reactionType: reactionType, completion: completion))
             labelsStackView.addArrangedSubview(createLabel(message.reactionCounts?.counts[reactionType] ?? 0))
         }
@@ -72,12 +72,12 @@ final class ReactionsView: UIView {
     }
     
     func update(with message: Message) {
-        avatarsStackView.removeAllArrangedSubviews()
+//        avatarsStackView.removeAllArrangedSubviews()
         labelsStackView.removeAllArrangedSubviews()
         
         ReactionType.allCases.forEach { reactionType in
-            let users = message.latestReactions.filter({ $0.type == reactionType }).compactMap({ $0.user })
-            avatarsStackView.addArrangedSubview(createAvatarView(users))
+//            let users = message.latestReactions.filter({ $0.type == reactionType }).compactMap({ $0.user })
+//            avatarsStackView.addArrangedSubview(createAvatarView(users))
             labelsStackView.addArrangedSubview(createLabel(message.reactionCounts?.counts[reactionType] ?? 0))
         }
     }
@@ -91,15 +91,15 @@ final class ReactionsView: UIView {
         let count = (reactionCounts?[reactionType] ?? 0) + increment
         label.text = count > 0 ? count.shortString() : nil
         
-        if increment > 0 {
-            if let avatarView = avatarsStackView.subviews[index].subviews.first as? AvatarView {
-                avatarView.update(with: User.current?.avatarURL,
-                                  name: User.current?.name,
-                                  baseColor: backgroundColor?.withAlphaComponent(1))
-            }
-        } else {
-            avatarsStackView.subviews[index].subviews.first?.removeFromSuperview()
-        }
+//        if increment > 0 {
+//            if let avatarView = avatarsStackView.subviews[index].subviews.first as? AvatarView {
+//                avatarView.update(with: User.current?.avatarURL,
+//                                  name: User.current?.name,
+//                                  baseColor: backgroundColor?.withAlphaComponent(1))
+//            }
+//        } else {
+//            avatarsStackView.subviews[index].subviews.first?.removeFromSuperview()
+//        }
     }
     
     func dismiss() {
