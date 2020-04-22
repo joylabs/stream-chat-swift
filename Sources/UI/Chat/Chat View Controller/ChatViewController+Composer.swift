@@ -205,15 +205,18 @@ extension ChatViewController {
                         self?.show(error: ClientError.errorMessage(messageResponse.message))
                     } else {
                         if hasTopic {
-                            guard let _self = self else { return }
-                            _self.channelPresenter?.send(text: originalMessage, parentIdMessage: messageResponse.message.id).subscribe(onNext: { replyMessage in
-                                self?.composerView.topicTextField.text = ""
-                                _self.redirectToTopic?( messageResponse.message, _self, _self.channelPresenter)
+                            guard let self = self else { return }
+                            self.channelPresenter?.send(text: originalMessage, parentIdMessage: messageResponse.message.id).subscribe(onNext: { replyMessage in
+                                self.composerView.resetTopicButton()
+                                if self.composerView.textView.isFirstResponder {
+                                    self.composerView.textView.resignFirstResponder()
+                                }
+                                self.redirectToTopic?( messageResponse.message, self, self.channelPresenter)
                             }, onError: { [weak self] in
                                 self?.show(error: $0)
                                 }, onCompleted: {
                                     print("complete")
-                            }).disposed(by: _self.disposeBag)
+                            }).disposed(by: self.disposeBag)
                         }
                     }
                 },
