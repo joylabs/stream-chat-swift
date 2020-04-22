@@ -131,7 +131,7 @@ public final class ComposerView: UIView {
         closeButton.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
         closeButton.tintColor = UIColor(red: 0, green: 155/255, blue: 234/255, alpha: 1)
         closeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        closeButton.addTarget(self, action: #selector(resetTopicButton), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(resetTopicButtonTapped), for: .touchUpInside)
         
         stackView.addArrangedSubview(topicTextField)
         stackView.addArrangedSubview(closeButton)
@@ -441,7 +441,11 @@ public extension ComposerView {
         topicTextField.becomeFirstResponder()
     }
     
-    @objc func resetTopicButton(_sender: UIButton) {
+    @objc private func resetTopicButtonTapped(_sender: UIButton) {
+        resetTopicButton()
+    }
+
+    func resetTopicButton() {
         topicActionsContainer.isHidden = true
         topicButton.isHidden = false
         topicTextField.text = ""
