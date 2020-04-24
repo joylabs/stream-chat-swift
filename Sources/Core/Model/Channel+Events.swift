@@ -114,7 +114,9 @@ extension Channel {
         var mentionedCount = 0
         
         for message in channelResponse.messages.reversed() {
-            if message.created > unreadMessageRead.lastReadDate {
+
+            //Unread count is the messages you didn't write that are newer than most recently read message. 
+            if message.created > unreadMessageRead.lastReadDate, message.user != currentUser {
                 count += 1
                 
                 if message.user != currentUser, message.mentionedUsers.contains(currentUser) {
